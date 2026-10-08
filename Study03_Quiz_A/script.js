@@ -31,7 +31,7 @@ function shuffleChoices(q, rng) {
 
 function scoreFor(mode, correct, hintUsed) {
   if (!correct) return 0;
-  return 1;
+  return mode === 'hint' && hintUsed ? 0.5 : 1;
 }
 
 function createGame({ mode, category, questions, isRetry = false }) {
@@ -57,6 +57,7 @@ function isFinished(game) {
 function answer(game, choiceIndex) {
   if (isFinished(game) || game.answered) return null;
   if (!Number.isInteger(choiceIndex) || choiceIndex < 0 || choiceIndex > 3) return null;
+  if (game.hidden.includes(choiceIndex)) return null;
   const q = game.questions[game.index];
   const correct = choiceIndex === q.answer;
   const points = scoreFor(game.mode, correct, game.hintUsed);
@@ -71,6 +72,16 @@ function answer(game, choiceIndex) {
     points,
     timedOut: false
   };
+}
+
+// 힌트 모드에서 문항마다 한 번, 오답 보기 2개를 지운다. 지운 보기 번호를 돌려주고, 쓸 수 없으면 null.
+function useHint(game, rng = Math.random) {
+  if (game.mode !== 'hint' || game.hintUsed || game.answered || isFinished(game)) return null;
+  const q = game.questions[game.index];
+  const wrong = [0, 1, 2, 3].filter((i) => i !== q.answer);
+  game.hidden = shuffle(wrong, rng).slice(0, 2).sort((a, b) => a - b);
+  game.hintUsed = true;
+  return game.hidden.slice();
 }
 
 function nextQuestion(game) {
@@ -238,6 +249,6 @@ if (typeof document !== 'undefined') {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    CATEGORIES, shuffle, pickQuestions, scoreFor, createGame, answer, nextQuestion, isFinished
+    CATEGORIES, shuffle, pickQuestions, scoreFor, createGame, answer, useHint, nextQuestion, isFinished
   };
 }
