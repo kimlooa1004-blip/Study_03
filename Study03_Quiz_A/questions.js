@@ -274,6 +274,98 @@ const QUESTIONS = [
     answer: 2,
     explanation: '뉴턴은 1687년 『자연철학의 수학적 원리(프린키피아)』에서 만유인력의 법칙과 3가지 운동 법칙을 제시했다.',
     source: 'Britannica, "Principia" https://www.britannica.com/topic/Principia'
+  },
+
+  // ===== 예술과 문화 =====
+  {
+    id: 'culture-01',
+    category: '예술과 문화',
+    question: '프랑스 루브르 박물관에 걸려 있는 「모나리자」를 그린 화가는?',
+    choices: ['레오나르도 다 빈치', '미켈란젤로', '라파엘로', '렘브란트'],
+    answer: 0,
+    explanation: '레오나르도 다 빈치가 1503년경 그리기 시작해 1519년 죽을 때까지 손질한 작품이다.',
+    source: 'Britannica, "Mona Lisa" https://www.britannica.com/topic/Mona-Lisa-painting ; Louvre https://www.louvre.fr/en/explore/the-palace/from-the-mona-lisa-to-the-wedding-feast-at-cana'
+  },
+  {
+    id: 'culture-02',
+    category: '예술과 문화',
+    question: '1889년 생레미의 요양원에서 「별이 빛나는 밤」을 그린 화가는?',
+    choices: ['빈센트 반 고흐', '클로드 모네', '폴 세잔', '구스타프 클림트'],
+    answer: 0,
+    explanation: '반 고흐가 1889년 6월 생레미의 요양원에서 기억과 상상으로 그린 작품이다.',
+    source: 'MoMA, "The Starry Night" https://www.moma.org/collection/works/79802'
+  },
+  {
+    id: 'culture-03',
+    category: '예술과 문화',
+    question: '1937년 스페인 내전 중 게르니카 폭격을 주제로 대형 그림 「게르니카」를 그린 화가는?',
+    choices: ['살바도르 달리', '호안 미로', '파블로 피카소', '앙리 마티스'],
+    answer: 2,
+    explanation: '피카소는 파리 만국박람회 스페인관에 걸 벽화로 1937년 「게르니카」를 그렸다.',
+    source: 'Britannica, "Guernica" https://www.britannica.com/topic/Guernica-by-Picasso ; Museo Reina Sofía https://www.museoreinasofia.es/en/collections/artwork/guernica-0/'
+  },
+  {
+    id: 'culture-04',
+    category: '예술과 문화',
+    question: '덴마크 왕자의 복수를 그린 비극 『햄릿』을 쓴 작가는?',
+    choices: ['괴테', '윌리엄 셰익스피어', '몰리에르', '도스토옙스키'],
+    answer: 1,
+    explanation: '『햄릿』은 셰익스피어가 1599~1601년경 쓴 5막 비극이며 1603년 사절판으로 처음 출간되었다.',
+    source: 'Britannica, "Hamlet" https://www.britannica.com/topic/Hamlet-by-Shakespeare ; Folger https://www.folger.edu/explore/shakespeares-works/hamlet/'
+  },
+  {
+    id: 'culture-05',
+    category: '예술과 문화',
+    question: '「지옥의 문」 위에 앉은 시인상으로 구상되어 「생각하는 사람」이 된 조각을 만든 조각가는?',
+    choices: ['미켈란젤로', '카노바', '오귀스트 로댕', '브랑쿠시'],
+    answer: 2,
+    explanation: '로댕이 1880년 「지옥의 문」 꼭대기의 단테상으로 구상했고 뒤에 독립 작품이 되었다.',
+    source: 'Musée Rodin, "The Thinker" https://www.musee-rodin.fr/en/musee/collections/oeuvres/thinker'
+  },
+  {
+    id: 'culture-06',
+    category: '예술과 문화',
+    question: '작곡가 모차르트가 태어난 도시는?',
+    choices: ['빈', '잘츠부르크', '베를린', '프라하'],
+    answer: 1,
+    explanation: '모차르트는 1756년 1월 27일 잘츠부르크에서 태어나 1791년 빈에서 세상을 떠났다.',
+    source: 'Britannica, "Wolfgang Amadeus Mozart Facts" https://www.britannica.com/facts/Wolfgang-Amadeus-Mozart'
+  },
+  {
+    id: 'culture-07',
+    category: '예술과 문화',
+    question: '마지막 악장에 실러의 시 「환희의 송가」를 합창으로 넣은 교향곡 9번의 작곡가는?',
+    choices: ['모차르트', '바흐', '슈베르트', '베토벤'],
+    answer: 3,
+    explanation: '베토벤의 교향곡 9번 d단조(작품 125)는 1824년 빈에서 초연되었다.',
+    source: 'Britannica, "Symphony No. 9 in D Minor, Op. 125" https://www.britannica.com/topic/Symphony-No-9-in-D-Minor'
+  },
+  {
+    id: 'culture-08',
+    category: '예술과 문화',
+    question: '2003년 유네스코 「인류구전 및 무형유산 걸작」으로 선정된 한국의 공연 예술은?',
+    choices: ['판소리', '종묘제례악', '강릉단오제', '강강술래'],
+    answer: 0,
+    explanation: '판소리는 2003년 11월 걸작에 뽑혔고 2008년 인류무형문화유산 대표목록이 되었다.',
+    source: '국가유산청 국가유산포털 「판소리」 https://www.heritage.go.kr/heri/cul/culSelectDetail.do?ccbaCpno=1279900050000 ; 유네스코한국위원회 https://unesco.or.kr/%EC%9C%A0%EB%84%A4%EC%8A%A4%EC%BD%94-%EC%83%81%EC%8B%9D-2/'
+  },
+  {
+    id: 'culture-09',
+    category: '예술과 문화',
+    question: '2024년 노벨 문학상을 받은 한국 작가는?',
+    choices: ['한강', '고은', '황석영', '박경리'],
+    answer: 0,
+    explanation: '한강은 "역사적 트라우마에 맞서는 강렬한 시적 산문"으로 2024년 노벨 문학상을 받았다.',
+    source: 'NobelPrize.org, 2024 Literature press release https://www.nobelprize.org/prizes/literature/2024/press-release/'
+  },
+  {
+    id: 'culture-10',
+    category: '예술과 문화',
+    question: '제왕을 기리는 유교 사당으로 1995년 유네스코 세계유산에 등재된 곳은?',
+    choices: ['경복궁', '종묘', '창덕궁', '수원화성'],
+    answer: 1,
+    explanation: '종묘는 정전과 영녕전이 원형대로 보존되어 1995년 12월 세계유산이 되었다.',
+    source: '국가유산청 국가유산포털 「종묘」 https://www.heritage.go.kr/heri/html/HtmlPage.do?pg=%2Funesco%2FHeritage%2FHeritage_03.jsp&pageNo=1_1_1_0 ; 한국민족문화대백과사전 https://encykorea.aks.ac.kr/Article/E0052928'
   }
 ];
 
