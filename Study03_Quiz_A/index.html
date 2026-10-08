@@ -8,10 +8,30 @@
 </head>
 <body>
   <main>
-    <section id="view-start">
+    <section id="view-mode">
       <h1>상식 퀴즈</h1>
-      <p class="lead">카테고리를 골라 10문제를 풀어 보세요. 답을 고르면 바로 해설이 나와요.</p>
-      <p class="no-record-notice">순위표에 기록되지 않음</p>
+      <p class="lead">모드를 고르세요. 답을 고르면 바로 정답 여부와 한 줄 해설이 나와요.</p>
+      <div class="mode-list">
+        <button type="button" class="mode-btn" data-mode="practice">
+          <strong>연습</strong>
+          <span>시간 제한과 힌트 없이, 맞히면 1점. 틀린 문제만 다시 풀 수 있어요.</span>
+          <span class="no-record-notice">순위표에 기록되지 않음</span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="speed">
+          <strong>스피드</strong>
+          <span>문항마다 15초. 시간이 지나면 오답이에요.</span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="hint">
+          <strong>힌트</strong>
+          <span>문항마다 힌트 1번으로 오답 보기 2개를 지워요. 힌트를 쓰고 맞히면 0.5점.</span>
+        </button>
+      </div>
+    </section>
+
+    <section id="view-start" hidden>
+      <h1>카테고리 선택</h1>
+      <p class="lead">모드: <strong id="start-mode-label"></strong></p>
+      <p id="start-notice" class="no-record-notice" hidden>순위표에 기록되지 않음</p>
       <p id="data-error" class="error" role="alert" hidden>문항 데이터를 불러올 수 없음</p>
       <div id="category-list" class="category-list">
         <button type="button" class="category-btn" data-category="한국사">한국사</button>
@@ -22,9 +42,13 @@
     </section>
 
     <section id="view-question" hidden>
-      <p id="progress" class="progress" aria-live="polite"></p>
+      <div class="status-row">
+        <p id="progress" class="progress" aria-live="polite"></p>
+        <p id="timer-box" class="timer-box" hidden>남은 시간 <span id="timer">15</span>초</p>
+      </div>
       <h2 id="question-text" class="question"></h2>
       <div id="choices" class="choices"></div>
+      <button type="button" id="hint-btn" class="hint-btn" hidden>힌트 (오답 2개 지우기)</button>
       <div id="feedback" class="feedback" aria-live="polite" hidden>
         <p id="result-label" class="result-label"></p>
         <p id="correct-answer" class="correct-answer"></p>
@@ -37,8 +61,11 @@
     <section id="view-result" hidden>
       <h2>결과</h2>
       <p id="score" class="score"></p>
-      <p class="no-record-notice">순위표에 기록되지 않음</p>
-      <button type="button" id="home-btn" class="primary">처음으로</button>
+      <p id="result-notice" class="no-record-notice" hidden>순위표에 기록되지 않음</p>
+      <p id="retry-summary" class="retry-summary" hidden></p>
+      <button type="button" id="retry-btn" class="primary" hidden>틀린 문제 다시 풀기</button>
+      <button type="button" id="again-btn" class="secondary">같은 설정으로 다시 하기</button>
+      <button type="button" id="home-btn" class="secondary">처음으로</button>
     </section>
   </main>
 

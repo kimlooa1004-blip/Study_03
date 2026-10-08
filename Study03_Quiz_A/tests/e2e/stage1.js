@@ -35,14 +35,19 @@ async function noHorizontalScroll(page, label) {
 
   await page.goto(URL);
 
-  // 시작 화면
+  // 모드 선택 → 연습 (1단계 기준은 연습 모드 기준으로 계속 확인한다)
+  assert.ok(await page.locator('#view-mode').isVisible(), '모드 선택 화면이 먼저 보여야 함');
+  await page.locator('.mode-btn[data-mode="practice"]').click();
+
+  // 시작(카테고리 선택) 화면
   assert.ok(await page.locator('#view-start').isVisible(), '시작 화면이 보여야 함');
   assert.strictEqual(await page.locator('.category-btn').count(), 4);
   assert.ok(await page.locator('#view-start .no-record-notice').isVisible(), '시작 화면 안내');
   assert.match(await page.locator('#view-start .no-record-notice').textContent(), /순위표에 기록되지 않음/);
-  for (const sel of ['.mode-btn', '#hint-btn', '#timer', '#retry-btn', '#leaderboard-btn']) {
-    assert.strictEqual(await page.locator(sel).count(), 0, `1단계에는 ${sel}가 없어야 함`);
+  for (const sel of ['#hint-btn', '#timer', '#retry-btn']) {
+    assert.ok(!(await page.locator(sel).isVisible()), `연습 모드에서는 ${sel}가 보이면 안 됨`);
   }
+  assert.strictEqual(await page.locator('#leaderboard-btn').count(), 0, '순위표 버튼은 3단계에서 생김');
   await noHorizontalScroll(page, '시작 화면');
 
   // 한 판 진행
@@ -100,11 +105,11 @@ async function noHorizontalScroll(page, label) {
   assert.ok(await page.locator('#view-result').isVisible());
   assert.strictEqual((await page.locator('#score').textContent()).trim(), '3 / 10');
   assert.match(await page.locator('#view-result .no-record-notice').textContent(), /순위표에 기록되지 않음/);
-  assert.strictEqual(await page.locator('#retry-btn').count(), 0);
+  assert.ok(await page.locator('#retry-btn').isVisible(), '2단계 이후: 틀린 문항이 있으면 다시 풀기 버튼이 보임');
   await noHorizontalScroll(page, '결과 화면');
 
   await page.locator('#home-btn').click();
-  assert.ok(await page.locator('#view-start').isVisible());
+  assert.ok(await page.locator('#view-mode').isVisible());
   assert.ok(!(await page.locator('#view-result').isVisible()));
 
   assert.deepStrictEqual(external, [], '외부 요청이 없어야 함');

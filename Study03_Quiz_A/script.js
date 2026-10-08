@@ -161,10 +161,16 @@ function formatScore(n) {
   return Number.isInteger(n) ? String(n) : n.toFixed(1);
 }
 
+const MODE_LABELS = { practice: '연습', speed: '스피드', hint: '힌트' };
+
 function initUI() {
   const $ = (id) => document.getElementById(id);
-  const viewNames = ['start', 'question', 'result'];
-  let game = null;
+  const viewNames = ['mode', 'start', 'question', 'result'];
+  let mode = null;
+  let category = null;
+  let rootGame = null; // 처음 10문제 판. 점수는 이 판의 결과만 인정한다
+  let game = null;     // 지금 풀고 있는 판(다시 풀기 라운드일 수 있다)
+  let stopTimer = () => {};
 
   function show(name) {
     viewNames.forEach((v) => { $('view-' + v).hidden = v !== name; });
@@ -188,20 +194,31 @@ function initUI() {
     $('data-error').hidden = !broken;
   }
 
-  function startGame(category) {
+  function selectMode(m) {
+    mode = m;
+    $('start-mode-label').textContent = MODE_LABELS[m];
+    $('start-notice').hidden = m !== 'practice';
+    checkData();
+    show('start');
+  }
+
+  function startGame(cat) {
     let questions;
     try {
-      questions = pickQuestions(availableQuestions(), category);
+      questions = pickQuestions(availableQuestions(), cat);
     } catch (e) {
       checkData();
       return;
     }
-    game = createGame({ mode: 'practice', category, questions });
+    category = cat;
+    rootGame = createGame({ mode, category, questions });
+    game = rootGame;
     renderQuestion();
     show('question');
   }
 
   function renderQuestion() {
+    stopTimer();
     const q = game.questions[game.index];
     $('progress').textContent = `${game.index + 1} / ${game.questions.length}`;
     $('question-text').textContent = q.question;
@@ -226,6 +243,23 @@ function initUI() {
     });
     $('feedback').hidden = true;
     $('next-btn').hidden = true;
+
+    const hintBtn = $('hint-btn');
+    hintBtn.hidden = game.mode !== 'hint';
+    hintBtn.disabled = false;
+
+    const timed = game.mode === 'speed';
+    $('timer-box').hidden = !timed;
+    if (timed) {
+      stopTimer = startTimer(
+        SPEED_SECONDS,
+        (n) => { $('timer').textContent = String(n); },
+        () => {
+          const fb = timeout(game);
+          if (fb) showFeedback(fb, null);
+        }
+      );
+    }
   }
 
   function appendSource(el, text) {
@@ -244,23 +278,22 @@ function initUI() {
     });
   }
 
-  function choose(i) {
-    const fb = answer(game, i);
-    if (!fb) return;
+  function showFeedback(fb, chosen) {
+    stopTimer();
     const q = game.questions[game.index];
-    const buttons = document.querySelectorAll('.choice-btn');
-    buttons.forEach((b, idx) => {
+    document.querySelectorAll('.choice-btn').forEach((b, idx) => {
       b.disabled = true;
       if (idx === fb.correctIndex) {
         b.classList.add('correct');
         b.querySelector('.mark').textContent = '✓';
-      } else if (idx === i) {
+      } else if (idx === chosen) {
         b.classList.add('wrong');
         b.querySelector('.mark').textContent = '✗';
       }
     });
+    $('hint-btn').disabled = true;
     const label = $('result-label');
-    label.textContent = fb.correct ? '정답입니다!' : '오답입니다';
+    label.textContent = fb.timedOut ? '시간 초과! 오답 처리돼요' : fb.correct ? '정답입니다!' : '오답입니다';
     label.className = 'result-label ' + (fb.correct ? 'ok' : 'bad');
     $('correct-answer').textContent = '정답: ' + q.choices[fb.correctIndex];
     $('explanation').textContent = fb.explanation;
@@ -272,25 +305,73 @@ function initUI() {
     next.focus();
   }
 
+  function choose(i) {
+    const fb = answer(game, i);
+    if (!fb) return;
+    showFeedback(fb, i);
+  }
+
+  function useHintClick() {
+    const hidden = useHint(game);
+    if (!hidden) return;
+    document.querySelectorAll('.choice-btn').forEach((b, idx) => {
+      if (hidden.includes(idx)) b.hidden = true;
+    });
+    $('hint-btn').disabled = true;
+  }
+
+  function renderResult() {
+    stopTimer();
+    $('score').textContent = `${formatScore(rootGame.score)} / ${rootGame.questions.length}`;
+    $('result-notice').hidden = rootGame.mode !== 'practice';
+    const summary = $('retry-summary');
+    if (game.isRetry) {
+      const right = game.results.filter((r) => r.correct).length;
+      summary.textContent = `다시 맞힌 ${right} / ${game.questions.length}`;
+      summary.hidden = false;
+    } else {
+      summary.hidden = true;
+    }
+    $('retry-btn').hidden = !(rootGame.mode === 'practice' && wrongQuestions(game).length > 0);
+    show('result');
+  }
+
   function goNext() {
     nextQuestion(game);
     if (isFinished(game)) {
-      $('score').textContent = `${formatScore(game.score)} / ${game.questions.length}`;
-      show('result');
+      renderResult();
     } else {
       renderQuestion();
     }
   }
 
+  function retry() {
+    const next = retryGame(game);
+    if (!next) return;
+    game = next;
+    renderQuestion();
+    show('question');
+  }
+
+  function goHome() {
+    stopTimer();
+    stopTimer = () => {};
+    game = null;
+    rootGame = null;
+    show('mode');
+  }
+
+  document.querySelectorAll('.mode-btn').forEach((btn) => {
+    btn.addEventListener('click', () => selectMode(btn.dataset.mode));
+  });
   document.querySelectorAll('.category-btn').forEach((btn) => {
     btn.addEventListener('click', () => startGame(btn.dataset.category));
   });
   $('next-btn').addEventListener('click', goNext);
-  $('home-btn').addEventListener('click', () => {
-    game = null;
-    checkData();
-    show('start');
-  });
+  $('hint-btn').addEventListener('click', useHintClick);
+  $('retry-btn').addEventListener('click', retry);
+  $('again-btn').addEventListener('click', () => startGame(category));
+  $('home-btn').addEventListener('click', goHome);
 
   document.addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
@@ -303,7 +384,7 @@ function initUI() {
   });
 
   checkData();
-  show('start');
+  show('mode');
 }
 
 if (typeof document !== 'undefined') {

@@ -100,3 +100,18 @@ button:disabled { cursor: default; }
 }
 
 .score { font-size: 2.4rem; font-weight: 800; margin: 8px 0 12px; }
+
+.mode-list { display: grid; gap: 10px; }
+.mode-btn { display: grid; gap: 4px; width: 100%; overflow-wrap: anywhere; }
+.mode-btn strong { font-size: 1.1rem; }
+.mode-btn .no-record-notice { margin: 4px 0 0; justify-self: start; }
+
+.status-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.timer-box { margin: 0 0 8px; font-weight: 700; }
+.timer-box #timer { font-size: 1.3rem; color: var(--accent); }
+
+.hint-btn { margin-top: 12px; width: 100%; text-align: center; }
+.hint-btn:disabled { opacity: 0.5; }
+
+.retry-summary { font-weight: 600; margin: 0 0 8px; }
+.secondary { margin-top: 10px; width: 100%; text-align: center; }
