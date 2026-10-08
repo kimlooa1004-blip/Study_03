@@ -92,6 +92,25 @@ function nextQuestion(game) {
   game.hidden = [];
 }
 
+// 틀린 문항(시간 초과 포함)을 푼 순서대로 돌려준다.
+function wrongQuestions(game) {
+  const wrongIds = new Set(game.results.filter((r) => !r.correct).map((r) => r.id));
+  return game.questions.filter((q) => wrongIds.has(q.id));
+}
+
+// 틀린 문항만 다시 푸는 연습 판. 틀린 문항이 없으면 null. 원래 판은 바꾸지 않고 보기 순서는 새로 섞는다.
+// 다시 푼 판에도 호출할 수 있어 모두 맞힐 때까지 반복된다.
+function retryGame(game, rng = Math.random) {
+  const wrong = wrongQuestions(game);
+  if (wrong.length === 0) return null;
+  return createGame({
+    mode: 'practice',
+    category: game.category,
+    questions: wrong.map((q) => shuffleChoices(q, rng)),
+    isRetry: true
+  });
+}
+
 // ===== UI: DOM을 다루는 코드. 브라우저에서만 실행된다 =====
 
 function formatScore(n) {
@@ -249,6 +268,6 @@ if (typeof document !== 'undefined') {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    CATEGORIES, shuffle, pickQuestions, scoreFor, createGame, answer, useHint, nextQuestion, isFinished
+    CATEGORIES, shuffle, pickQuestions, scoreFor, createGame, answer, useHint, nextQuestion, isFinished, wrongQuestions, retryGame
   };
 }
