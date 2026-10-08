@@ -90,6 +90,98 @@ const QUESTIONS = [
     answer: 0,
     explanation: '1865년 신정왕후가 경복궁 중건을 명하며 총책임을 흥선대원군에게 맡겼다.',
     source: '한국민족문화대백과사전 「경복궁」 https://encykorea.aks.ac.kr/Article/E0002434'
+  },
+
+  // ===== 세계지리 =====
+  {
+    id: 'geography-01',
+    category: '세계지리',
+    question: '오스트레일리아의 수도는?',
+    choices: ['시드니', '멜버른', '캔버라', '브리즈번'],
+    answer: 2,
+    explanation: '캔버라는 시드니와 멜버른의 중간쯤에 있는 호주 수도이며, 연방 의회는 1927년에 캔버라로 옮겼다.',
+    source: 'Britannica, "What is the capital of Australia?" https://www.britannica.com/question/What-is-the-capital-of-Australia'
+  },
+  {
+    id: 'geography-02',
+    category: '세계지리',
+    question: '튀르키예(터키)의 수도는?',
+    choices: ['이스탄불', '앙카라', '이즈미르', '부르사'],
+    answer: 1,
+    explanation: '앙카라는 1923년 공화국 수립 때부터 수도이며, 큰 도시인 이스탄불과 혼동하기 쉽다.',
+    source: 'Britannica, "Ankara, capital of Turkey" https://www.britannica.com/summary/Ankara'
+  },
+  {
+    id: 'geography-03',
+    category: '세계지리',
+    question: '캐나다의 수도는?',
+    choices: ['토론토', '몬트리올', '밴쿠버', '오타와'],
+    answer: 3,
+    explanation: '오타와는 온타리오주 남동부, 퀘벡주와 맞닿은 오타와강 남쪽에 있으며 1857년 빅토리아 여왕이 수도로 정했다.',
+    source: 'Britannica, "Ottawa" https://www.britannica.com/place/Ottawa'
+  },
+  {
+    id: 'geography-04',
+    category: '세계지리',
+    question: '이집트 북부에서 삼각주를 이루며 지중해로 흘러드는 강은?',
+    choices: ['나일강', '아마존강', '갠지스강', '도나우강'],
+    answer: 0,
+    explanation: '나일강은 이집트 북부에서 지중해로 흘러들며 카이로 북쪽에서 로제타·다미에타 두 줄기로 갈라지는 삼각주를 이룬다.',
+    source: 'Britannica, "Nile River" https://www.britannica.com/place/Nile-River ; National Geographic, "Nile River" https://education.nationalgeographic.org/resource/nile-river/'
+  },
+  {
+    id: 'geography-05',
+    category: '세계지리',
+    question: '아프리카의 킬리만자로산이 있는 나라는?',
+    choices: ['이집트', '모로코', '탄자니아', '남아프리카공화국'],
+    answer: 2,
+    explanation: '킬리만자로산은 탄자니아 북동부, 케냐 국경 가까이에 있으며 정상 우후루 봉은 해발 5,895m이다.',
+    source: 'Britannica, "Kilimanjaro National Park" https://www.britannica.com/place/Kilimanjaro-National-Park'
+  },
+  {
+    id: 'geography-06',
+    category: '세계지리',
+    question: '남아메리카에서 스페인어가 아닌 포르투갈어를 공용어로 쓰는 나라는?',
+    choices: ['아르헨티나', '칠레', '콜롬비아', '브라질'],
+    answer: 3,
+    explanation: '브라질은 포르투갈의 식민지였기 때문에 포르투갈어를 쓰고, 남아메리카의 다른 대부분 나라는 스페인어를 쓴다.',
+    source: 'Britannica, "Brazil" https://www.britannica.com/place/Brazil'
+  },
+  {
+    id: 'geography-07',
+    category: '세계지리',
+    question: '파나마 운하가 연결하는 두 대양은?',
+    choices: ['대서양과 태평양', '대서양과 인도양', '태평양과 인도양', '북극해와 대서양'],
+    answer: 0,
+    explanation: '파나마 운하는 파나마 지협을 가로질러 대서양과 태평양을 잇고, 1914년에 개통되었다.',
+    source: 'Britannica, "Panama Canal" https://www.britannica.com/topic/Panama-Canal'
+  },
+  {
+    id: 'geography-08',
+    category: '세계지리',
+    question: '사하라 사막이 있는 대륙은?',
+    choices: ['아시아', '아프리카', '오세아니아', '남아메리카'],
+    answer: 1,
+    explanation: '사하라는 아프리카 북부에 펼쳐진 사막으로 모로코·알제리·이집트·말리·차드 등 여러 나라에 걸쳐 있다.',
+    source: 'Britannica, "Sahara summary" https://www.britannica.com/summary/Sahara-desert-Africa'
+  },
+  {
+    id: 'geography-09',
+    category: '세계지리',
+    question: '남아메리카 대륙의 서부를 따라 길게 뻗은 산맥은?',
+    choices: ['로키산맥', '알프스산맥', '히말라야산맥', '안데스산맥'],
+    answer: 3,
+    explanation: '안데스산맥은 남아메리카 서쪽을 따라 약 8,900km 이어지며 칠레·아르헨티나·페루 등을 지난다.',
+    source: 'Britannica, "Andes Mountains" https://www.britannica.com/summary/Andes-Mountains'
+  },
+  {
+    id: 'geography-10',
+    category: '세계지리',
+    question: '영국 잉글랜드와 프랑스 사이에 있으며 영국해협과 북해를 잇는 좁은 해협은?',
+    choices: ['도버 해협', '지브롤터 해협', '보스포루스 해협', '말라카 해협'],
+    answer: 0,
+    explanation: '도버 해협은 영국해협의 동쪽 끝으로 잉글랜드의 도버와 프랑스의 칼레를 가르며 영국해협과 북해를 잇는다.',
+    source: 'Britannica, "English Channel summary" https://www.britannica.com/summary/English-Channel'
   }
 ];
 
