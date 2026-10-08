@@ -128,6 +128,80 @@ function retryGame(game, rng = Math.random) {
   });
 }
 
+// ===== 순위표: localStorage에 모드×카테고리별 상위 5건을 저장한다 =====
+
+const LEADERBOARD_KEY = 'quiz.leaderboard.v1';
+const LEADERBOARD_SIZE = 5;
+const NAME_MAX = 10;
+
+function getStorage() {
+  try {
+    return typeof localStorage !== 'undefined' ? localStorage : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// 저장소에 접근하지 못하면(getItem 예외) 예외를 그대로 던지고, 값이 깨졌으면 빈 순위표로 복구한다.
+function readBoards(storage) {
+  const raw = storage.getItem(LEADERBOARD_KEY);
+  if (raw === null || raw === undefined) return {};
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function cleanRecords(list) {
+  if (!Array.isArray(list)) return [];
+  return list
+    .filter((r) => r && typeof r.name === 'string' && Number.isFinite(r.score) && Number.isFinite(r.at))
+    .map((r) => ({ name: r.name, score: r.score, at: r.at }));
+}
+
+// 점수 내림차순, 동점이면 먼저 세운(at이 작은) 기록이 위
+function sortRecords(list) {
+  return list.slice().sort((a, b) => b.score - a.score || a.at - b.at);
+}
+
+function getTop(storage, mode, category) {
+  if (!storage) return [];
+  try {
+    const boards = readBoards(storage);
+    return sortRecords(cleanRecords(boards[mode + '|' + category])).slice(0, LEADERBOARD_SIZE);
+  } catch (e) {
+    return [];
+  }
+}
+
+// 저장에 성공하면 true. 연습 모드, 잘못된 이름(trim 후 1~10자가 아님), 저장 실패는 false.
+function addRecord(storage, mode, category, name, score, at) {
+  if (!storage || (mode !== 'speed' && mode !== 'hint')) return false;
+  if (typeof name !== 'string') return false;
+  const trimmed = name.trim();
+  if (trimmed.length < 1 || trimmed.length > NAME_MAX) return false;
+  if (!Number.isFinite(score) || !Number.isFinite(at)) return false;
+  try {
+    const boards = readBoards(storage);
+    const key = mode + '|' + category;
+    boards[key] = sortRecords(cleanRecords(boards[key]).concat({ name: trimmed, score, at }))
+      .slice(0, LEADERBOARD_SIZE);
+    storage.setItem(LEADERBOARD_KEY, JSON.stringify(boards));
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function formatDate(at) {
+  const d = new Date(at);
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${mm}-${dd}`;
+}
+
 // ===== UI: DOM을 다루는 코드. 브라우저에서만 실행된다 =====
 
 // 마감 시각(Date.now() 기준)으로 남은 초를 계산하는 타이머. 만료 시 onExpire를 한 번만 부르고, 돌려준 stop()으로 멈춘다.
@@ -394,6 +468,7 @@ if (typeof document !== 'undefined') {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     CATEGORIES, SPEED_SECONDS, shuffle, pickQuestions, scoreFor, createGame, answer, timeout, useHint,
-    nextQuestion, isFinished, wrongQuestions, retryGame, startTimer
+    nextQuestion, isFinished, wrongQuestions, retryGame, startTimer,
+    LEADERBOARD_KEY, getStorage, getTop, addRecord, formatDate
   };
 }
