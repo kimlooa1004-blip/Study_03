@@ -47,7 +47,6 @@ async function noHorizontalScroll(page, label) {
   for (const sel of ['#hint-btn', '#timer', '#retry-btn']) {
     assert.ok(!(await page.locator(sel).isVisible()), `연습 모드에서는 ${sel}가 보이면 안 됨`);
   }
-  assert.strictEqual(await page.locator('#leaderboard-btn').count(), 0, '순위표 버튼은 3단계에서 생김');
   await noHorizontalScroll(page, '시작 화면');
 
   // 한 판 진행

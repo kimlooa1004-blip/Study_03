@@ -239,7 +239,9 @@ const MODE_LABELS = { practice: '연습', speed: '스피드', hint: '힌트' };
 
 function initUI() {
   const $ = (id) => document.getElementById(id);
-  const viewNames = ['mode', 'start', 'question', 'result'];
+  const viewNames = ['mode', 'start', 'question', 'result', 'leaderboard'];
+  let lbMode = 'speed';
+  let lbCategory = '한국사';
   let mode = null;
   let category = null;
   let rootGame = null; // 처음 10문제 판. 점수는 이 판의 결과만 인정한다
@@ -407,7 +409,75 @@ function initUI() {
       summary.hidden = true;
     }
     $('retry-btn').hidden = !(rootGame.mode === 'practice' && wrongQuestions(game).length > 0);
+    renderSaveBox();
     show('result');
+  }
+
+  // 스피드·힌트의 처음 판 결과에서만 이름을 받아 기록한다. 연습과 다시 풀기 라운드에는 없다.
+  function renderSaveBox() {
+    const recordable = !game.isRetry && (rootGame.mode === 'speed' || rootGame.mode === 'hint');
+    $('save-box').hidden = !recordable;
+    const input = $('name-input');
+    const btn = $('save-btn');
+    input.value = '';
+    input.disabled = rootGame.saved;
+    btn.disabled = rootGame.saved;
+    setSaveNotice('', null);
+    if (recordable && !getStorage()) {
+      setSaveNotice('기록을 저장할 수 없음', 'error');
+      input.disabled = true;
+      btn.disabled = true;
+    }
+  }
+
+  function setSaveNotice(text, kind) {
+    const el = $('save-notice');
+    el.textContent = text;
+    el.className = 'save-notice' + (kind ? ' ' + kind : '');
+    el.hidden = !text;
+  }
+
+  function saveRecord() {
+    if (!rootGame || rootGame.saved) return;
+    const name = $('name-input').value.trim();
+    if (name.length < 1 || name.length > NAME_MAX) {
+      setSaveNotice('이름을 1~10자로 입력', 'error');
+      return;
+    }
+    const ok = addRecord(getStorage(), rootGame.mode, rootGame.category, name, rootGame.score, Date.now());
+    if (!ok) {
+      setSaveNotice('기록을 저장할 수 없음', 'error');
+      return;
+    }
+    rootGame.saved = true;
+    $('name-input').disabled = true;
+    $('save-btn').disabled = true;
+    setSaveNotice('기록했어요', 'ok');
+  }
+
+  function renderBoard() {
+    document.querySelectorAll('.lb-mode-tab').forEach((b) => {
+      b.setAttribute('aria-pressed', String(b.dataset.mode === lbMode));
+    });
+    document.querySelectorAll('.lb-category-tab').forEach((b) => {
+      b.setAttribute('aria-pressed', String(b.dataset.category === lbCategory));
+    });
+    const list = $('lb-list');
+    list.textContent = '';
+    const top = getTop(getStorage(), lbMode, lbCategory);
+    top.forEach((rec, i) => {
+      const li = document.createElement('li');
+      li.className = 'lb-row';
+      [['lb-rank', `${i + 1}위`], ['lb-name', rec.name], ['lb-score', formatScore(rec.score)], ['lb-date', formatDate(rec.at)]]
+        .forEach(([cls, text]) => {
+          const span = document.createElement('span');
+          span.className = cls;
+          span.textContent = text;
+          li.appendChild(span);
+        });
+      list.appendChild(li);
+    });
+    $('lb-empty').hidden = top.length > 0;
   }
 
   function goNext() {
@@ -446,6 +516,24 @@ function initUI() {
   $('retry-btn').addEventListener('click', retry);
   $('again-btn').addEventListener('click', () => startGame(category));
   $('home-btn').addEventListener('click', goHome);
+  $('save-btn').addEventListener('click', saveRecord);
+  $('name-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      saveRecord();
+    }
+  });
+  $('leaderboard-btn').addEventListener('click', () => {
+    renderBoard();
+    show('leaderboard');
+  });
+  $('lb-back-btn').addEventListener('click', () => show('mode'));
+  document.querySelectorAll('.lb-mode-tab').forEach((b) => {
+    b.addEventListener('click', () => { lbMode = b.dataset.mode; renderBoard(); });
+  });
+  document.querySelectorAll('.lb-category-tab').forEach((b) => {
+    b.addEventListener('click', () => { lbCategory = b.dataset.category; renderBoard(); });
+  });
 
   document.addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey) return;

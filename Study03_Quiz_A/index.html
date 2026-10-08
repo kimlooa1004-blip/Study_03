@@ -26,6 +26,7 @@
           <span>문항마다 힌트 1번으로 오답 보기 2개를 지워요. 힌트를 쓰고 맞히면 0.5점.</span>
         </button>
       </div>
+      <button type="button" id="leaderboard-btn" class="secondary">순위표 보기</button>
     </section>
 
     <section id="view-start" hidden>
@@ -63,9 +64,34 @@
       <p id="score" class="score"></p>
       <p id="result-notice" class="no-record-notice" hidden>순위표에 기록되지 않음</p>
       <p id="retry-summary" class="retry-summary" hidden></p>
+      <div id="save-box" class="save-box" hidden>
+        <label for="name-input">이름을 적고 기록을 저장하세요 (1~10자)</label>
+        <div class="save-row">
+          <input type="text" id="name-input" maxlength="10" autocomplete="off">
+          <button type="button" id="save-btn">기록 저장</button>
+        </div>
+        <p id="save-notice" class="save-notice" role="status" hidden></p>
+      </div>
       <button type="button" id="retry-btn" class="primary" hidden>틀린 문제 다시 풀기</button>
       <button type="button" id="again-btn" class="secondary">같은 설정으로 다시 하기</button>
       <button type="button" id="home-btn" class="secondary">처음으로</button>
+    </section>
+
+    <section id="view-leaderboard" hidden>
+      <h2>순위표</h2>
+      <div class="tab-row" id="lb-mode-tabs">
+        <button type="button" class="lb-mode-tab" data-mode="speed" aria-pressed="true">스피드</button>
+        <button type="button" class="lb-mode-tab" data-mode="hint" aria-pressed="false">힌트</button>
+      </div>
+      <div class="tab-row" id="lb-category-tabs">
+        <button type="button" class="lb-category-tab" data-category="한국사" aria-pressed="true">한국사</button>
+        <button type="button" class="lb-category-tab" data-category="세계지리" aria-pressed="false">세계지리</button>
+        <button type="button" class="lb-category-tab" data-category="과학" aria-pressed="false">과학</button>
+        <button type="button" class="lb-category-tab" data-category="예술과 문화" aria-pressed="false">예술과 문화</button>
+      </div>
+      <ol id="lb-list" class="lb-list"></ol>
+      <p id="lb-empty" class="lb-empty" hidden>아직 기록이 없어요</p>
+      <button type="button" id="lb-back-btn" class="secondary">돌아가기</button>
     </section>
   </main>
 

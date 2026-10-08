@@ -115,3 +115,25 @@ button:disabled { cursor: default; }
 
 .retry-summary { font-weight: 600; margin: 0 0 8px; }
 .secondary { margin-top: 10px; width: 100%; text-align: center; }
+
+.save-box { margin: 12px 0; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
+.save-box label { display: block; margin-bottom: 8px; font-weight: 600; }
+.save-row { display: flex; gap: 8px; }
+.save-row input { flex: 1; min-width: 0; font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; }
+.save-row input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.save-row button { flex: none; }
+.save-row button:disabled, .save-row input:disabled { opacity: 0.6; }
+.save-notice { margin: 8px 0 0; font-weight: 600; }
+.save-notice.error { color: var(--bad); }
+.save-notice.ok { color: var(--ok); }
+
+.tab-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.tab-row button { padding: 8px 12px; text-align: center; }
+.tab-row button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); font-weight: 600; }
+
+.lb-list { list-style: none; margin: 12px 0; padding: 0; display: grid; gap: 8px; }
+.lb-row { display: grid; grid-template-columns: 2.2em 1fr auto auto; gap: 8px; align-items: baseline; padding: 10px 12px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
+.lb-name { overflow-wrap: anywhere; }
+.lb-score { font-weight: 700; }
+.lb-date { color: var(--muted); font-size: 0.85rem; }
+.lb-empty { color: var(--muted); }
