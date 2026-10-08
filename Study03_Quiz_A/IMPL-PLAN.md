@@ -71,12 +71,12 @@ PRD가 암시하지만 기본 점검만으로는 놓치기 쉬운 입력·조건
 
 **완료 기준:** PRD 6.1의 1-1~1-8. 점검 명령이 통과하고, 아래 직접 확인 항목을 모두 확인한다.
 
-**직접 확인할 항목** (`index.html`을 더블클릭해 연다. 최종 앱은 첫 화면이 모드 선택이므로 [연습]을 먼저 고른다.)
+**직접 확인할 항목** (`index.html`을 더블클릭해 연다. 최종 앱은 카테고리를 고른 뒤 모드 선택 화면이 나오므로 [연습]을 고른다.)
 
 | # | 확인할 것 | 기대 결과 |
 |---|---|---|
-| 1-B1 | 파일을 더블클릭해 열기 | 서버 없이 열리고 카테고리 버튼 4개와 "순위표에 기록되지 않음"이 보인다 |
-| 1-B2 | [한국사] 누르기 | 문제, 보기 4개, 위쪽에 `한국사 · 연습`, `1 / 10`, `점수 0`이 보인다 |
+| 1-B1 | 파일을 더블클릭해 열기 | 서버 없이 열리고 제목 `상식 퀴즈`, 안내 `카테고리를 고르세요. 한 판은 카테고리의 문항 전부입니다.`, 카테고리 버튼 4개가 보인다(1단계 시점에는 [연습] 안내 "순위표에 기록되지 않음"도 이 화면에 있다) |
+| 1-B2 | [한국사] 누르기(최종 앱은 이어서 [연습]) | 문제, 보기 4개, 위쪽에 `한국사 · 연습`, `1 / 10`, `점수 0`이 보인다 |
 | 1-B3 | 보기 하나 누르기 | 곧바로 정답이면 초록 ✓ + "정답입니다!"(점수가 1 오른다), 오답이면 고른 보기가 빨강 ✗ + "오답입니다"와 정답이 표시되고 한 줄 해설과 출처(기관명·주소)가 나온다 |
 | 1-B4 | 답한 뒤 다른 보기 누르기 | 보기가 잠겨 눌리지 않는다 |
 | 1-B5 | [다음] 누르기 | `2 / 10`으로 넘어간다. 10번째 문항의 버튼은 [결과 보기]이다 |
@@ -143,7 +143,7 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 
 **Interfaces:**
 - Consumes: Task 7의 로직 전체.
-- Produces: 화면 `#view-start`(카테고리 선택), `#view-question`, `#view-result`(전환은 `hidden` 속성). `.category-btn[data-category]` 4개, `.no-record-notice`, `#progress`(`3 / 10`), `#question-text`, `.choice-btn` 4개(`.choice-num`, `.choice-text`, `.mark`), `#feedback`(`#result-label`, `#correct-answer`, `#explanation`, `#source`), `#next-btn`(마지막은 `결과 보기`), `#score`(`7 / 10`), `#mode-line`(`한국사 · 연습`), `#live-score`(`점수 N`), `#result-list`(문항별 정답·오답 `.result-item`), `#home-btn`, `#data-error`(문항 데이터 오류). 단축키: `1`~`4` 선택, `Enter` 다음(`preventDefault`로 중복 방지). 출처 주소는 `https://` 링크로 표시한다. 모든 텍스트는 `textContent`로 넣는다.
+- Produces: 화면 `#view-start`(카테고리 선택, 첫 화면), `#view-question`, `#view-result`(전환은 `hidden` 속성). `.category-btn[data-category]` 4개, `.no-record-notice`, `#progress`(`3 / 10`), `#question-text`, `.choice-btn` 4개(`.choice-num`, `.choice-text`, `.mark`), `#feedback`(`#result-label`, `#correct-answer`, `#explanation`, `#source`), `#next-btn`(마지막은 `결과 보기`), `#score`(`7 / 10`), `#mode-line`(`한국사 · 연습`), `#live-score`(`점수 N`), `#result-list`(문항별 정답·오답 `.result-item`), `#home-btn`, `#data-error`(문항 데이터 오류). 단축키: `1`~`4` 선택, `Enter` 다음(`preventDefault`로 중복 방지). 출처 주소는 `https://` 링크로 표시한다. 모든 텍스트는 `textContent`로 넣는다.
 
 - [x] **Step 1:** 마크업·스타일·UI를 구현한다. 렌더 함수는 `Game`을 읽기만 하고 로직 함수만 호출한다. 폭 375px에서 가로 스크롤이 없어야 한다.
 - [x] **Step 2:** `selfCheck`의 `data`·`game` 점검이 통과한다.
@@ -162,7 +162,7 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 
 | # | 확인할 것 | 기대 결과 |
 |---|---|---|
-| 2-B1 | 첫 화면 | 연습·스피드·힌트 3개 모드와 설명이 보이고 연습 설명에 "순위표에 기록되지 않음"이 있다. 모드 → 카테고리 순으로 고른다 |
+| 2-B1 | 카테고리를 고른 뒤 나오는 화면 | 연습·스피드·힌트 3개 모드와 설명이 보이고 연습 설명에 "순위표에 기록되지 않음"이 있다. 카테고리 → 모드 순으로 고르며 [카테고리 다시 고르기]로 돌아갈 수 있다 |
 | 2-B2 | 스피드 시작 후 5초 기다리고 답하기 | 타이머가 `15`에서 줄고, 답하면 멈춘다. [다음]을 누르면 `15`부터 다시 센다 |
 | 2-B3 | 스피드에서 15초 가만히 두기 | "시간 초과! 오답 처리돼요"와 정답·해설이 보이고 [다음]을 기다린다. 점수는 오르지 않는다 |
 | 2-B4 | 시간 초과 직후 보기 누르기·숫자 키 누르기 | 반응하지 않고 점수가 그대로이다 |
@@ -202,7 +202,7 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 
 **Interfaces:**
 - Consumes: Task 9~11의 로직, Task 8의 선택자.
-- Produces: `#view-mode`(`.mode-btn[data-mode="practice|speed|hint"]`, 연습 설명에 `.no-record-notice`), 흐름 모드 → 카테고리 → 문제 → 결과, `#start-notice`(연습일 때만), `#timer`(`#timer-box` 안, 스피드만), `#hint-btn`(힌트 모드만), 지워진 보기는 `hidden`, 결과의 `#again-btn`([같은 모드 다시]), `#home-btn`(모드 선택으로).
+- Produces: `#view-mode`(카테고리를 고른 뒤 나오는 모드 선택. `.mode-btn[data-mode="practice|speed|hint"]`, 연습 설명에 `.no-record-notice`, `#mode-category-label`, `#mode-back-btn`), 흐름 카테고리 → 모드 → 문제 → 결과, `#timer`(`#timer-box` 안, 스피드만), `#hint-btn`(힌트 모드만), 지워진 보기는 `hidden`, 결과의 `#again-btn`([같은 모드 다시]), `#home-btn`(첫 화면으로).
 
 - [x] **Step 1:** 구현한다. 판이 바뀔 때(다음 문항, 결과, 홈) 이전 타이머의 `stop()`을 반드시 호출한다.
 - [x] **Step 2:** 점검 명령 통과 후 커밋한다.
@@ -251,7 +251,7 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 
 **Interfaces:**
 - Consumes: Task 14의 순위표 함수, Task 12의 화면.
-- Produces: `#view-leaderboard`(첫 화면의 `#leaderboard-btn`으로 진입, `#lb-back-btn`), 모드 탭 `.lb-mode-tab[data-mode="speed|hint"]`, 카테고리 탭 `.lb-category-tab[data-category]`(`aria-pressed`로 선택 표시), 행 `.lb-row`(`.lb-rank`, `.lb-name`, `.lb-score`, `.lb-date`), `#lb-empty`. 스피드·힌트 결과 화면의 `#name-input`(maxlength 10), `#save-btn`, `#save-notice`(`이름을 1~10자로 입력`, `기록을 저장할 수 없음`, `기록했어요`). 기록은 [기록 저장]을 누를 때만, 판마다 한 번 저장한다(`Game.saved`).
+- Produces: `#view-leaderboard`(첫 화면(카테고리 선택)의 `#leaderboard-btn`으로 진입, `#lb-back-btn`), 모드 탭 `.lb-mode-tab[data-mode="speed|hint"]`, 카테고리 탭 `.lb-category-tab[data-category]`(`aria-pressed`로 선택 표시), 행 `.lb-row`(`.lb-rank`, `.lb-name`, `.lb-score`, `.lb-date`), `#lb-empty`. 스피드·힌트 결과 화면의 `#name-input`(maxlength 10), `#save-btn`, `#save-notice`(`이름을 1~10자로 입력`, `기록을 저장할 수 없음`, `기록했어요`). 기록은 [기록 저장]을 누를 때만, 판마다 한 번 저장한다(`Game.saved`).
 
 - [x] **Step 1:** 구현한다. 결과 화면에서 저장소가 없으면(`getStorage() === null`) "기록을 저장할 수 없음"을 바로 보여 준다.
 - [x] **Step 2:** 점검 명령이 통과한다.

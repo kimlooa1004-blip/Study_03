@@ -239,7 +239,7 @@ const MODE_LABELS = { practice: '연습', speed: '스피드', hint: '힌트' };
 
 function initUI() {
   const $ = (id) => document.getElementById(id);
-  const viewNames = ['mode', 'start', 'question', 'result', 'leaderboard'];
+  const viewNames = ['start', 'mode', 'question', 'result', 'leaderboard'];
   let lbMode = 'speed';
   let lbCategory = '한국사';
   let mode = null;
@@ -270,22 +270,23 @@ function initUI() {
     $('data-error').hidden = !broken;
   }
 
-  function selectMode(m) {
-    mode = m;
-    $('start-mode-label').textContent = MODE_LABELS[m];
-    $('start-notice').hidden = m !== 'practice';
-    checkData();
-    show('start');
+  // 카테고리를 먼저 고르고, 그다음 모드를 고른다.
+  function selectCategory(cat) {
+    category = cat;
+    $('mode-category-label').textContent = cat;
+    show('mode');
   }
 
-  function startGame(cat) {
+  function startGame(m, cat) {
     let questions;
     try {
       questions = pickQuestions(availableQuestions(), cat);
     } catch (e) {
       checkData();
+      show('start');
       return;
     }
+    mode = m;
     category = cat;
     rootGame = createGame({ mode, category, questions });
     game = rootGame;
@@ -528,19 +529,21 @@ function initUI() {
     stopTimer = () => {};
     game = null;
     rootGame = null;
-    show('mode');
+    checkData();
+    show('start');
   }
 
-  document.querySelectorAll('.mode-btn').forEach((btn) => {
-    btn.addEventListener('click', () => selectMode(btn.dataset.mode));
-  });
   document.querySelectorAll('.category-btn').forEach((btn) => {
-    btn.addEventListener('click', () => startGame(btn.dataset.category));
+    btn.addEventListener('click', () => selectCategory(btn.dataset.category));
   });
+  document.querySelectorAll('.mode-btn').forEach((btn) => {
+    btn.addEventListener('click', () => startGame(btn.dataset.mode, category));
+  });
+  $('mode-back-btn').addEventListener('click', () => show('start'));
   $('next-btn').addEventListener('click', goNext);
   $('hint-btn').addEventListener('click', useHintClick);
   $('retry-btn').addEventListener('click', retry);
-  $('again-btn').addEventListener('click', () => startGame(category));
+  $('again-btn').addEventListener('click', () => startGame(rootGame.mode, rootGame.category));
   $('home-btn').addEventListener('click', goHome);
   $('save-btn').addEventListener('click', saveRecord);
   $('name-input').addEventListener('keydown', (e) => {
@@ -553,7 +556,7 @@ function initUI() {
     renderBoard();
     show('leaderboard');
   });
-  $('lb-back-btn').addEventListener('click', () => show('mode'));
+  $('lb-back-btn').addEventListener('click', () => show('start'));
   document.querySelectorAll('.lb-mode-tab').forEach((b) => {
     b.addEventListener('click', () => { lbMode = b.dataset.mode; renderBoard(); });
   });
@@ -572,7 +575,7 @@ function initUI() {
   });
 
   checkData();
-  show('mode');
+  show('start');
 }
 
 // ===== 자체 점검: 브라우저 없이 Node에서 실행한다 =====
