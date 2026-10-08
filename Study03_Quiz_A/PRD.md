@@ -173,7 +173,7 @@
 
 ## 7. 검증 방법
 
-- 단위 테스트: `node --test Study03_Quiz_A/tests/` (Node `node:test`)
+- 단위 테스트: `node --test "Study03_Quiz_A/tests/**/*.test.js"` (Node `node:test`)
 - 화면 테스트: `NODE_PATH=$(npm root -g) node Study03_Quiz_A/tests/e2e/stageN.js` (Playwright, `file://`)
 - 문항 검사기: `tests/validateQuestions.js`가 보기 4개·유일한 정답 인덱스·해설 80자 이하 한 줄·출처 URL·최상급 문제의 "기준"·중복 id·보기 중복을 검사한다. 기계가 확인할 수 없는 "정답이 하나인지"와 "출처가 실제 내용을 뒷받침하는지"는 사람이 확인한다.
 - 최종 확인(3단계 이후)

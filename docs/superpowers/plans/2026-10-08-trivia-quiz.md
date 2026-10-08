@@ -47,7 +47,7 @@
 | `Study03_Quiz_A/tests/*.test.js` | `node:test` 단위 테스트 |
 | `Study03_Quiz_A/tests/e2e/stageN.js` | Playwright 화면 검증 |
 
-실행 명령: 단위 `node --test Study03_Quiz_A/tests/`, 화면 `NODE_PATH=$(npm root -g) node Study03_Quiz_A/tests/e2e/stage1.js` (실패 시 종료 코드 1).
+실행 명령: 단위 `node --test "Study03_Quiz_A/tests/**/*.test.js"`, 화면 `NODE_PATH=$(npm root -g) node Study03_Quiz_A/tests/e2e/stage1.js` (실패 시 종료 코드 1).
 
 ## 공용 타입
 
@@ -100,7 +100,7 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 - Test: `Study03_Quiz_A/tests/questions.data.test.js`
 
 - [ ] **Step 1: 테스트 작성** — `validateQuestions(QUESTIONS)`가 `[]`, `QUESTIONS.length === 40`, 4개 카테고리가 각각 정확히 10개.
-- [ ] **Step 2: 실행해 통과 확인** — `node --test Study03_Quiz_A/tests/` → PASS
+- [ ] **Step 2: 실행해 통과 확인** — `node --test "Study03_Quiz_A/tests/**/*.test.js"` → PASS
 - [ ] **Step 3: 커밋** — `git commit -am "test: assert 40 questions, 10 per category"`
 
 ### Task 7: 연습 모드 게임 로직
@@ -134,7 +134,7 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 - [ ] **Step 1: 실패하는 화면 테스트 작성** — `file://`로 열기 → 시작 화면에 `.no-record-notice`와 카테고리 버튼 4개 → `과학` 선택 → `#progress`가 `1 / 10` → 보기 클릭 → `#feedback`에 해설과 출처가 보이고 보기 4개가 모두 비활성 → 키보드 `1` 선택·`Enter` 다음 동작 → 10문제를 모두 푼 뒤 `#score`가 `N / 10` 형식이고 결과 화면에도 `.no-record-notice` → `#home-btn`이 시작 화면으로 돌아감. 정답 인덱스는 페이지의 `QUESTIONS`로 계산해 정확히 3문제만 맞히고 `#score`가 `3 / 10`임을 단언(섞인 보기 순서에서도 정답 위치를 `QUESTIONS`의 정답 문자열로 찾아 클릭). 문항 데이터 오류 안내(PRD 1-7)는 `pickQuestions`의 `Error`를 UI가 잡아 `#data-error`(`문항 데이터를 불러올 수 없음`)를 보여 주고 해당 `.category-btn`을 비활성으로 두는 것으로 구현하며, 단위 테스트(Task 7)로 `Error`를 확인하고 화면은 `questions.js`의 한 카테고리를 임시로 줄여 수동 확인한다.
 - [ ] **Step 2: 실패 확인** — `NODE_PATH=$(npm root -g) node Study03_Quiz_A/tests/e2e/stage1.js` → FAIL
 - [ ] **Step 3: 마크업·스타일·UI 구현** — 렌더 함수는 `Game`을 읽기만 하고 로직 함수만 호출한다. 모바일(폭 375px)에서 가로 스크롤이 없어야 한다.
-- [ ] **Step 4: 통과 확인** — 같은 명령 → PASS, 이어서 `node --test Study03_Quiz_A/tests/` → PASS
+- [ ] **Step 4: 통과 확인** — 같은 명령 → PASS, 이어서 `node --test "Study03_Quiz_A/tests/**/*.test.js"` → PASS
 - [ ] **Step 5: 커밋** — `git add Study03_Quiz_A && git commit -m "feat: practice mode UI (stage 1)"`
 
 ---
@@ -154,7 +154,7 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 - [ ] **Step 1: 실패하는 테스트 작성** — 힌트 후 `hidden.length === 2`이고 정답 인덱스가 포함되지 않음(rng를 바꿔 100회 반복); 힌트 사용 후 정답 → `points 0.5`, 힌트 없이 정답 → `1`, 힌트 후 오답 → `0`; **`useHint` 두 번째 호출은 `null`이고 `hidden` 불변; 지워진 보기를 `answer`하면 `null`이고 점수 불변; 연습·스피드 모드에서 `useHint`는 `null`**(Review Focus 3); 다음 문항으로 가면 `hidden`과 `hintUsed`가 초기화.
 - [ ] **Step 2: 실패 확인** → FAIL
 - [ ] **Step 3: 구현** — `nextQuestion`이 `hidden`/`hintUsed`를 초기화하도록 확장.
-- [ ] **Step 4: 통과 확인** — `node --test Study03_Quiz_A/tests/` → PASS
+- [ ] **Step 4: 통과 확인** — `node --test "Study03_Quiz_A/tests/**/*.test.js"` → PASS
 - [ ] **Step 5: 커밋** — `git commit -am "feat: hint logic and scoring"`
 
 ### Task 10: 틀린 문제 다시 풀기 로직
@@ -169,7 +169,7 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 - [ ] **Step 1: 실패하는 테스트 작성** — 3문제 틀린 판 → `wrongQuestions.length === 3`이고 순서 유지; 전부 맞힌 판 → `retryGame`이 `null`(Review Focus 4); `retryGame`으로 만든 판을 끝까지 풀어도 원래 `game.score`가 그대로; 다시 푼 판의 `isRetry === true`이고, 그 판에서 일부를 또 틀리면 `retryGame`이 그 문항들로 다시 판을 만들며(보기 순서 새로 섞임), 모두 맞히면 `null`.
 - [ ] **Step 2: 실패 확인** → FAIL
 - [ ] **Step 3: 구현**
-- [ ] **Step 4: 통과 확인** — `node --test Study03_Quiz_A/tests/` → PASS
+- [ ] **Step 4: 통과 확인** — `node --test "Study03_Quiz_A/tests/**/*.test.js"` → PASS
 - [ ] **Step 5: 커밋** — `git commit -am "feat: retry wrong questions logic"`
 
 ### Task 11: 스피드 로직과 타이머
@@ -184,7 +184,7 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 - [ ] **Step 1: 실패하는 테스트 작성** — `timeout`은 `points 0`·`correct false`·`timedOut true`, 점수 불변, `results`에 `{ timedOut: true }` 기록; **`answer` 뒤 `timeout`은 `null`, `timeout` 뒤 `answer`는 `null`(채점은 한 문항에 한 번)**(Review Focus 2); 스피드 정답 `points 1`.
 - [ ] **Step 2: 실패 확인** → FAIL
 - [ ] **Step 3: 구현** — `startTimer`는 DOM 없이 Node에서도 불러올 수 있게 UI 구역 안 함수 선언으로 둔다.
-- [ ] **Step 4: 통과 확인** — `node --test Study03_Quiz_A/tests/` → PASS
+- [ ] **Step 4: 통과 확인** — `node --test "Study03_Quiz_A/tests/**/*.test.js"` → PASS
 - [ ] **Step 5: 커밋** — `git commit -am "feat: speed mode logic and timer"`
 
 ### Task 12: 모드 선택·스피드·힌트·다시 풀기 화면
@@ -200,7 +200,7 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 - [ ] **Step 1: 실패하는 화면 테스트 작성** — `page.clock`으로 시간 제어. (a) 스피드: 시작 시 `#timer`가 `15`, 5초 경과 후 약 `10`, 답하면 정지(5초 더 경과해도 값 불변), `#next-btn` 후 다시 `15`; 15초 경과하면 오답 처리되고 정답·해설이 보이며 `#next-btn`을 기다림; **시간 초과 직후 보기 클릭이 점수에 반영되지 않음; 결과 화면에서 `#home-btn`으로 나온 뒤 15초가 지나도 아무 변화 없음**(Review Focus 2). (b) 힌트: `#hint-btn` 클릭 → 보기 2개가 사라지고 정답 보기는 남음, 버튼 비활성, 힌트 후 정답이면 결과가 `0.5` 단위로 표시. (c) 연습: 일부러 2문제를 틀린 판 → `#retry-btn` 표시 → 2문제만 다시 풀고 `#retry-summary` 확인, 원래 점수는 결과에 그대로; 다시 풀 때 일부러 1문제를 또 틀리면 `#retry-btn`이 다시 나오고 그 1문제만 다시 풀 수 있으며, 모두 맞히면 `#retry-btn`이 사라짐; 전부 맞힌 판에는 `#retry-btn`이 없음.
 - [ ] **Step 2: 실패 확인** — `NODE_PATH=$(npm root -g) node Study03_Quiz_A/tests/e2e/stage2.js` → FAIL
 - [ ] **Step 3: 구현** — 판이 바뀔 때(다음 문항, 결과, 홈) 이전 타이머의 `stop()`을 반드시 호출한다.
-- [ ] **Step 4: 통과 확인** — stage1.js, stage2.js, `node --test Study03_Quiz_A/tests/` 모두 PASS (1단계 화면은 모드 선택이 추가되어 stage1.js의 시작 절차를 맞게 고친다)
+- [ ] **Step 4: 통과 확인** — stage1.js, stage2.js, `node --test "Study03_Quiz_A/tests/**/*.test.js"` 모두 PASS (1단계 화면은 모드 선택이 추가되어 stage1.js의 시작 절차를 맞게 고친다)
 - [ ] **Step 5: 커밋** — `git add Study03_Quiz_A && git commit -m "feat: speed/hint modes, mode select, retry (stage 2)"`
 
 ---
@@ -219,7 +219,7 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 - [ ] **Step 1: 실패하는 테스트 작성** — 6개 기록 후 `getTop`은 5개이고 최저 점수가 빠짐; 점수 `7.5`, `7`, `7.5`(더 최근)의 정렬 → 이전 `7.5`, 최근 `7.5`, `7`; **이름이 빈 문자열·공백뿐·11자이면 `addRecord`가 `false`이고 저장 안 됨, 앞뒤 공백은 잘라 저장, 10자는 통과**; 모드·카테고리가 다르면 서로 섞이지 않음; `addRecord(…'practice'…)`는 `false`이고 아무것도 저장 안 함; `setItem`이 예외를 던지는 storage → `false`, 던지지 않음; **`getItem`이 `'{깨진'`·`'[]'`·`'null'`을 돌려주면 `getTop`은 `[]`이고 이후 `addRecord`가 정상 저장**; `storage === null`이면 `getTop`은 `[]`, `addRecord`는 `false`(Review Focus 5); `formatDate(new Date(2026, 9, 8).getTime()) === '2026-10-08'`.
 - [ ] **Step 2: 실패 확인** — `node --test Study03_Quiz_A/tests/leaderboard.test.js` → FAIL
 - [ ] **Step 3: 구현**
-- [ ] **Step 4: 통과 확인** — `node --test Study03_Quiz_A/tests/` → PASS
+- [ ] **Step 4: 통과 확인** — `node --test "Study03_Quiz_A/tests/**/*.test.js"` → PASS
 - [ ] **Step 5: 커밋** — `git commit -am "feat: leaderboard storage logic"`
 
 ### Task 14: 순위표 화면과 자동 기록
@@ -235,14 +235,14 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 - [ ] **Step 1: 실패하는 화면 테스트 작성** — 스피드 `과학` 한 판을 끝낸 뒤 이름 `민수`를 입력하고 [기록 저장]을 누르면 순위표의 스피드·과학 탭에 `.lb-row` 1개(이름·점수·날짜 `YYYY-MM-DD` 포함), 같은 판이 힌트·과학 탭이나 스피드·한국사 탭에는 없음(`#lb-empty`); 빈 이름·11자 이름은 저장되지 않고 안내가 보임; [기록 저장]을 두 번 눌러도 기록은 1건이고 버튼이 비활성; 연습 판과 다시 풀기 라운드의 결과 화면에는 `#name-input`이 없음; 페이지를 새로 열어도(같은 `localStorage`) 기록이 남음; 6판을 저장하면 표에는 5건만 보임; `Storage.prototype.setItem`이 예외를 던지게 한 컨텍스트에서 판이 정상 완료되고 `#save-notice`가 보임; `localStorage`에 깨진 값을 미리 넣어도 순위표가 `#lb-empty`로 열림.
 - [ ] **Step 2: 실패 확인** — `NODE_PATH=$(npm root -g) node Study03_Quiz_A/tests/e2e/stage3.js` → FAIL
 - [ ] **Step 3: 구현** — [기록 저장]을 눌렀을 때만 `addRecord`를 호출하고, 성공하면 `Game.saved = true`로 두어 중복 저장을 막는다(필드 추가 시 공용 타입 주석도 갱신).
-- [ ] **Step 4: 통과 확인** — stage1~3.js, `node --test Study03_Quiz_A/tests/` 모두 PASS
+- [ ] **Step 4: 통과 확인** — stage1~3.js, `node --test "Study03_Quiz_A/tests/**/*.test.js"` 모두 PASS
 - [ ] **Step 5: 커밋** — `git add Study03_Quiz_A && git commit -m "feat: leaderboard UI and auto-record (stage 3)"`
 
 ### Task 15: 최종 검증
 
 **Files:** 수정 없음 (결함을 발견하면 해당 작업의 파일을 고친다)
 
-- [ ] **Step 1: 전체 테스트** — `node --test Study03_Quiz_A/tests/` 및 stage1~3.js → 모두 PASS
+- [ ] **Step 1: 전체 테스트** — `node --test "Study03_Quiz_A/tests/**/*.test.js"` 및 stage1~3.js → 모두 PASS
 - [ ] **Step 2: 배포 파일 점검** — `ls Study03_Quiz_A`에 배포 파일은 정확히 4개(`index.html`, `style.css`, `script.js`, `questions.js`)와 `tests/`, `PRD.md`뿐; `index.html`에 외부 URL(`http`)이 없음 → `grep -n "http" Study03_Quiz_A/index.html` 결과 없음
 - [ ] **Step 3: 네트워크·콘솔 확인** — Playwright로 `file://`을 열어 한 판을 끝까지 진행하며 `requestfailed`·`console.error`·`pageerror`가 0건이고 외부 요청이 없음을 확인
 - [ ] **Step 4: 폭 375px 확인** — 시작·문제·결과·순위표 화면에서 `document.documentElement.scrollWidth <= 375`
