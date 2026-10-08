@@ -2,6 +2,7 @@
 
 const CATEGORIES = ['한국사', '세계지리', '과학', '예술과 문화'];
 const QUESTIONS_PER_GAME = 10;
+const SPEED_SECONDS = 15;
 
 function shuffle(arr, rng = Math.random) {
   const out = arr.slice();
@@ -52,6 +53,22 @@ function createGame({ mode, category, questions, isRetry = false }) {
 
 function isFinished(game) {
   return game.index >= game.questions.length;
+}
+
+// 스피드 모드에서 15초가 지났을 때: 오답(0점)으로 처리한다. 이미 답했으면 null.
+function timeout(game) {
+  if (isFinished(game) || game.answered) return null;
+  const q = game.questions[game.index];
+  game.answered = true;
+  game.results.push({ id: q.id, correct: false, hintUsed: game.hintUsed, timedOut: true });
+  return {
+    correct: false,
+    correctIndex: q.answer,
+    explanation: q.explanation,
+    source: q.source,
+    points: 0,
+    timedOut: true
+  };
 }
 
 function answer(game, choiceIndex) {
@@ -112,6 +129,33 @@ function retryGame(game, rng = Math.random) {
 }
 
 // ===== UI: DOM을 다루는 코드. 브라우저에서만 실행된다 =====
+
+// 마감 시각(Date.now() 기준)으로 남은 초를 계산하는 타이머. 만료 시 onExpire를 한 번만 부르고, 돌려준 stop()으로 멈춘다.
+function startTimer(seconds, onTick, onExpire) {
+  const deadline = Date.now() + seconds * 1000;
+  let last = null;
+  let done = false;
+  let id = null;
+  function stop() {
+    done = true;
+    if (id !== null) clearInterval(id);
+  }
+  function check() {
+    if (done) return;
+    const remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+    if (remaining !== last) {
+      last = remaining;
+      onTick(remaining);
+    }
+    if (Date.now() >= deadline) {
+      stop();
+      onExpire();
+    }
+  }
+  check();
+  if (!done) id = setInterval(check, 100);
+  return stop;
+}
 
 function formatScore(n) {
   return Number.isInteger(n) ? String(n) : n.toFixed(1);
@@ -268,6 +312,7 @@ if (typeof document !== 'undefined') {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    CATEGORIES, shuffle, pickQuestions, scoreFor, createGame, answer, useHint, nextQuestion, isFinished, wrongQuestions, retryGame
+    CATEGORIES, SPEED_SECONDS, shuffle, pickQuestions, scoreFor, createGame, answer, timeout, useHint,
+    nextQuestion, isFinished, wrongQuestions, retryGame, startTimer
   };
 }
