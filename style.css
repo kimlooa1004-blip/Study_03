@@ -143,7 +143,7 @@ button:disabled { cursor: default; }
 .live-score { margin: 0 0 8px; font-weight: 600; color: var(--muted); }
 
 .result-list { list-style: none; margin: 12px 0; padding: 0; display: grid; gap: 6px; }
-.result-item { display: grid; grid-template-columns: 2.4em 1fr; gap: 8px; padding: 8px 12px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow-wrap: anywhere; }
+.result-item { display: grid; grid-template-columns: 7.5em 1fr; gap: 8px; padding: 8px 12px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow-wrap: anywhere; }
 .result-item .badge { font-weight: 700; }
 .result-item.ok .badge { color: var(--ok); }
 .result-item.bad .badge { color: var(--bad); }
@@ -157,3 +157,7 @@ button:disabled { cursor: default; }
   color: var(--accent);
   overflow-wrap: anywhere;
 }
+
+.timer-box.urgent #timer { color: var(--bad); }
+.choice-btn.struck { opacity: 0.45; }
+.choice-btn.struck .choice-text { text-decoration: line-through; }

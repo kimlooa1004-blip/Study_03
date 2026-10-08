@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%232c55d6%27/%3E%3Ctext x=%2716%27 y=%2723%27 font-size=%2722%27 text-anchor=%27middle%27 fill=%27white%27 font-family=%27sans-serif%27%3E?%3C/text%3E%3C/svg%3E">
   <title>상식 퀴즈</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -23,8 +24,8 @@
     </section>
 
     <section id="view-mode" hidden>
-      <h1>모드 선택</h1>
-      <p class="lead">카테고리: <strong id="mode-category-label"></strong>. 모드를 고르세요. 답을 고르면 바로 정답 여부와 한 줄 해설이 나와요.</p>
+      <h1><span id="mode-category-label"></span> · 모드를 고르세요</h1>
+      <p class="lead">답을 고르면 바로 정답 여부와 한 줄 해설이 나와요.</p>
       <div class="mode-list">
         <button type="button" class="mode-btn" data-mode="practice">
           <strong>연습</strong>
@@ -40,7 +41,7 @@
           <span>문항마다 힌트 1번으로 오답 보기 2개를 지워요. 힌트를 쓰고 맞히면 0.5점.</span>
         </button>
       </div>
-      <button type="button" id="mode-back-btn" class="secondary">카테고리 다시 고르기</button>
+      <button type="button" id="mode-back-btn" class="secondary">뒤로</button>
     </section>
 
     <section id="view-question" hidden>

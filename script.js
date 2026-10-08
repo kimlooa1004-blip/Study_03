@@ -334,13 +334,18 @@ function initUI() {
     const hintBtn = $('hint-btn');
     hintBtn.hidden = game.mode !== 'hint';
     hintBtn.disabled = false;
+    hintBtn.textContent = '힌트 (오답 2개 지우기)';
 
     const timed = game.mode === 'speed';
     $('timer-box').hidden = !timed;
+    $('timer-box').classList.remove('urgent');
     if (timed) {
       stopTimer = startTimer(
         SPEED_SECONDS,
-        (n) => { $('timer').textContent = String(n); },
+        (n) => {
+          $('timer').textContent = String(n);
+          $('timer-box').classList.toggle('urgent', n <= 5);
+        },
         () => {
           const fb = timeout(game);
           if (fb) showFeedback(fb, null);
@@ -403,8 +408,12 @@ function initUI() {
     const hidden = useHint(game);
     if (!hidden) return;
     document.querySelectorAll('.choice-btn').forEach((b, idx) => {
-      if (hidden.includes(idx)) b.hidden = true;
+      if (hidden.includes(idx)) {
+        b.classList.add('struck');
+        b.disabled = true;
+      }
     });
+    $('hint-btn').textContent = '힌트 사용함';
     $('hint-btn').disabled = true;
   }
 
@@ -436,7 +445,7 @@ function initUI() {
       li.className = 'result-item ' + (r.correct ? 'ok' : 'bad');
       const badge = document.createElement('span');
       badge.className = 'badge';
-      badge.textContent = r.correct ? '정답' : r.timedOut ? '초과' : '오답';
+      badge.textContent = r.correct ? (r.hintUsed ? '정답 (힌트 0.5점)' : '정답') : r.timedOut ? '시간 초과' : '오답';
       const body = document.createElement('span');
       body.textContent = `${i + 1}. ${q.question}`;
       const detail = document.createElement('span');
