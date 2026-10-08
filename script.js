@@ -4,6 +4,9 @@ const CATEGORIES = ['한국사', '세계지리', '과학', '예술과 문화'];
 const QUESTIONS_PER_GAME = 10;
 const SPEED_SECONDS = 15;
 
+// 과제 제출용: 페이지 맨 위에 보여 줄 학번과 이름. 여기만 고치면 된다.
+const STUDENT = { id: '', name: '' };
+
 function shuffle(arr, rng = Math.random) {
   const out = arr.slice();
   for (let i = out.length - 1; i > 0; i--) {
@@ -247,6 +250,11 @@ function initUI() {
   let rootGame = null; // 처음 10문제 판. 점수는 이 판의 결과만 인정한다
   let game = null;     // 지금 풀고 있는 판(다시 풀기 라운드일 수 있다)
   let stopTimer = () => {};
+
+  // 페이지 맨 위에 학번과 이름을 보여 준다(모든 화면에서 보인다).
+  $('student-badge').textContent = STUDENT.id && STUDENT.name
+    ? `학번 ${STUDENT.id} 이름 ${STUDENT.name}`
+    : '학번 (입력 필요) 이름 (입력 필요)';
 
   function show(name) {
     viewNames.forEach((v) => { $('view-' + v).hidden = v !== name; });

@@ -12,7 +12,7 @@
 
 ## 전역 제약
 
-- 파일은 `Study03_Quiz_A/` 아래 앱 파일 4개. 외부 라이브러리·네트워크 요청 없음. `file://`로 열어 동작해야 한다. 테스트 파일·테스트 폴더는 만들지 않는다.
+- 저장소 루트에 앱 파일 4개(`index.html`, `style.css`, `script.js`, `questions.js`)와 문서 `PRD.md`, `IMPL-PLAN.md`, `CLAUDE.md`를 둔다(깃허브 페이지 배포와 과제 제출을 위해 루트에 두며, 처음에는 `Study03_Quiz_A/` 폴더 안에 있었다). 외부 라이브러리·네트워크 요청 없음. `file://`로 열어 동작해야 한다. 테스트 파일·테스트 폴더는 만들지 않는다.
 - 카테고리 4개: `한국사`, `세계지리`, `과학`, `예술과 문화`. 카테고리마다 10문제, 총 40문제. 한 판 = 카테고리 1개의 10문제.
 - 보기는 4개, 정답은 하나. 틀린 문항은 모든 모드에서 0점.
 - 연습: 시간 제한·힌트 없음, 맞히면 1점, 순위표 기록 안 함. 시작 화면과 결과 화면에 `순위표에 기록되지 않음` 표시.
@@ -25,10 +25,9 @@
 
 ## 점검 명령과 커밋 규칙
 
-**점검 명령**(`script.js`의 `selfCheck()`를 실행한다. 같은 점검을 브라우저에서는 주소 끝에 `?test`를 붙여 열면 콘솔에서 볼 수 있다. 통과하면 `OK N개 통과`, 실패하면 실패한 점검 이름을 출력하고 종료 코드 1):
+**점검 명령**(저장소 루트에서 실행한다. `script.js`의 `selfCheck()`를 실행한다. 같은 점검을 브라우저에서는 주소 끝에 `?test`를 붙여 열면 콘솔에서 볼 수 있다. 통과하면 `OK N개 통과`, 실패하면 실패한 점검 이름을 출력하고 종료 코드 1):
 
 ```
-cd Study03_Quiz_A
 node -e "const r=require('./script.js').selfCheck(); console.log(r.failures.length ? r.failures.join('\n') : 'OK ' + r.passed + '개 통과'); process.exit(r.failures.length ? 1 : 0)"
 ```
 
@@ -92,7 +91,7 @@ PRD가 암시하지만 기본 점검만으로는 놓치기 쉬운 입력·조건
 ### Task 1: 문항 검사기와 자체 점검 뼈대
 
 **Files:**
-- Modify: `Study03_Quiz_A/script.js`
+- Modify: `script.js`
 
 **Interfaces:**
 - Produces: `validateQuestions(list: Question[]) -> string[]`(위반 메시지, 비면 통과), `selfCheck(questions?) -> { passed: number, failures: string[] }`. 검사: 보기 4개·보기 중복 없음·`answer` 0~3·해설 80자 이하 한 줄·출처에 `http` 주소·최상급 표현이 있으면 문제에 `기준`·id 중복 없음·카테고리가 4개 중 하나.
@@ -124,7 +123,7 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 ### Task 7: 연습 모드 게임 로직
 
 **Files:**
-- Modify: `Study03_Quiz_A/script.js`
+- Modify: `script.js`
 
 **Interfaces:**
 - Consumes: `QUESTIONS`
@@ -138,8 +137,8 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 ### Task 8: 연습 모드 화면
 
 **Files:**
-- Create: `Study03_Quiz_A/index.html`, `Study03_Quiz_A/style.css`
-- Modify: `Study03_Quiz_A/script.js`(UI 구역, `initUI()`)
+- Create: `index.html`, `style.css`
+- Modify: `script.js`(UI 구역, `initUI()`)
 
 **Interfaces:**
 - Consumes: Task 7의 로직 전체.

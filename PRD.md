@@ -187,7 +187,6 @@
 - **자체 점검**: 점검 코드는 `script.js` 안의 `selfCheck()`에 있어 앱 파일 4개가 유지된다. 브라우저 없이 Node에서 한 줄로 실행한다(Node 설치 필요).
 
   ```
-  cd Study03_Quiz_A
   node -e "const r=require('./script.js').selfCheck(); console.log(r.failures.length ? r.failures.join('\n') : 'OK ' + r.passed + '개 통과'); process.exit(r.failures.length ? 1 : 0)"
   ```
 
@@ -199,7 +198,7 @@
 
 | 항목 | 방법 |
 |---|---|
-| 앱 파일이 정확히 4개이고 외부 URL이 없다 | `ls Study03_Quiz_A`, `grep -n "http" Study03_Quiz_A/index.html` 결과 없음 |
+| 앱 파일(`index.html`, `style.css`, `script.js`, `questions.js`)이 정확히 4개이고 외부 URL이 없다 | 저장소 루트에서 `ls`, `grep -n "http" index.html` 결과 없음 |
 | 폭 375px 안팎의 좁은 화면에서 가로 스크롤이 없다 | 브라우저 개발자 도구의 기기 모드로 각 화면 확인 |
 | 키보드로 보기 선택(`1`~`4`)과 다음(`Enter`)이 된다 | 직접 확인 1-B6 |
 
