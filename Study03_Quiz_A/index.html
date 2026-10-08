@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>상식 퀴즈</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <section id="view-start">
+      <h1>상식 퀴즈</h1>
+      <p class="lead">카테고리를 골라 10문제를 풀어 보세요. 답을 고르면 바로 해설이 나와요.</p>
+      <p class="no-record-notice">순위표에 기록되지 않음</p>
+      <p id="data-error" class="error" role="alert" hidden>문항 데이터를 불러올 수 없음</p>
+      <div id="category-list" class="category-list">
+        <button type="button" class="category-btn" data-category="한국사">한국사</button>
+        <button type="button" class="category-btn" data-category="세계지리">세계지리</button>
+        <button type="button" class="category-btn" data-category="과학">과학</button>
+        <button type="button" class="category-btn" data-category="예술과 문화">예술과 문화</button>
+      </div>
+    </section>
+
+    <section id="view-question" hidden>
+      <p id="progress" class="progress" aria-live="polite"></p>
+      <h2 id="question-text" class="question"></h2>
+      <div id="choices" class="choices"></div>
+      <div id="feedback" class="feedback" aria-live="polite" hidden>
+        <p id="result-label" class="result-label"></p>
+        <p id="correct-answer" class="correct-answer"></p>
+        <p id="explanation" class="explanation"></p>
+        <p id="source" class="source"></p>
+      </div>
+      <button type="button" id="next-btn" class="primary" hidden>다음</button>
+    </section>
+
+    <section id="view-result" hidden>
+      <h2>결과</h2>
+      <p id="score" class="score"></p>
+      <p class="no-record-notice">순위표에 기록되지 않음</p>
+      <button type="button" id="home-btn" class="primary">처음으로</button>
+    </section>
+  </main>
+
+  <script src="questions.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

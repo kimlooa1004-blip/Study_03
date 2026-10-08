@@ -1,0 +1,102 @@
+:root {
+  --bg: #f6f7fb;
+  --fg: #1d2433;
+  --muted: #5b6475;
+  --card: #ffffff;
+  --line: #d5d9e4;
+  --accent: #2f5bea;
+  --accent-fg: #ffffff;
+  --ok: #1b7f4b;
+  --ok-bg: #e3f5ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe7e5;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, "Segoe UI", "Noto Sans KR", sans-serif;
+  line-height: 1.5;
+}
+
+main {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+h1, h2 { margin: 0 0 12px; }
+.lead { color: var(--muted); margin: 0 0 12px; }
+
+.no-record-notice {
+  display: inline-block;
+  margin: 0 0 16px;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.error { color: var(--bad); font-weight: 600; }
+
+.category-list { display: grid; gap: 10px; }
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--fg);
+  padding: 12px 14px;
+  text-align: left;
+}
+button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+button:disabled { cursor: default; }
+
+.category-btn { font-size: 1.1rem; font-weight: 600; }
+.category-btn:disabled { opacity: 0.5; }
+
+.progress { color: var(--muted); margin: 0 0 8px; font-weight: 600; }
+.question { font-size: 1.2rem; line-height: 1.4; margin-bottom: 16px; overflow-wrap: anywhere; }
+
+.choices { display: grid; gap: 10px; }
+.choice-btn { display: flex; gap: 10px; align-items: baseline; width: 100%; overflow-wrap: anywhere; }
+.choice-num { font-weight: 700; color: var(--muted); }
+.choice-text { flex: 1; }
+.mark { font-weight: 700; }
+.choice-btn.correct { background: var(--ok-bg); border-color: var(--ok); color: var(--ok); }
+.choice-btn.wrong { background: var(--bad-bg); border-color: var(--bad); color: var(--bad); }
+
+.feedback {
+  margin-top: 16px;
+  padding: 12px 14px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow-wrap: anywhere;
+}
+.feedback p { margin: 0 0 6px; }
+.result-label { font-weight: 700; font-size: 1.1rem; }
+.result-label.ok { color: var(--ok); }
+.result-label.bad { color: var(--bad); }
+.source { color: var(--muted); font-size: 0.85rem; }
+.source a { color: var(--accent); }
+
+.primary {
+  margin-top: 16px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+}
+
+.score { font-size: 2.4rem; font-weight: 800; margin: 8px 0 12px; }
