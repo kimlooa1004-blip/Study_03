@@ -297,6 +297,8 @@ function initUI() {
     stopTimer();
     const q = game.questions[game.index];
     $('progress').textContent = `${game.index + 1} / ${game.questions.length}`;
+    $('mode-line').textContent = `${game.category} · ${MODE_LABELS[game.mode]}${game.isRetry ? ' · 다시 풀기' : ''}`;
+    $('live-score').textContent = `점수 ${formatScore(rootGame.score)}`;
     $('question-text').textContent = q.question;
     const box = $('choices');
     box.textContent = '';
@@ -374,6 +376,7 @@ function initUI() {
     $('correct-answer').textContent = '정답: ' + q.choices[fb.correctIndex];
     $('explanation').textContent = fb.explanation;
     appendSource($('source'), fb.source);
+    $('live-score').textContent = `점수 ${formatScore(rootGame.score)}`;
     $('feedback').hidden = false;
     const next = $('next-btn');
     next.textContent = game.index === game.questions.length - 1 ? '결과 보기' : '다음';
@@ -409,8 +412,31 @@ function initUI() {
       summary.hidden = true;
     }
     $('retry-btn').hidden = !(rootGame.mode === 'practice' && wrongQuestions(game).length > 0);
+    renderResultList();
     renderSaveBox();
     show('result');
+  }
+
+  // 처음 10문제의 문항별 정답·오답 목록
+  function renderResultList() {
+    const list = $('result-list');
+    list.textContent = '';
+    rootGame.results.forEach((r, i) => {
+      const q = rootGame.questions.find((x) => x.id === r.id);
+      const li = document.createElement('li');
+      li.className = 'result-item ' + (r.correct ? 'ok' : 'bad');
+      const badge = document.createElement('span');
+      badge.className = 'badge';
+      badge.textContent = r.correct ? '정답' : r.timedOut ? '초과' : '오답';
+      const body = document.createElement('span');
+      body.textContent = `${i + 1}. ${q.question}`;
+      const detail = document.createElement('span');
+      detail.className = 'detail';
+      detail.textContent = `정답: ${q.choices[q.answer]}`;
+      body.appendChild(detail);
+      li.append(badge, body);
+      list.appendChild(li);
+    });
   }
 
   // 스피드·힌트의 처음 판 결과에서만 이름을 받아 기록한다. 연습과 다시 풀기 라운드에는 없다.
@@ -611,13 +637,14 @@ function withFakeClock(fn) {
 }
 
 // 모든 점검을 돌려 { passed, failures }를 돌려준다. 브라우저에서는 호출하지 않는다.
-function selfCheck(questions) {
+function selfCheck(questions, log) {
   const all = questions || (typeof QUESTIONS !== 'undefined' ? QUESTIONS : require('./questions.js').QUESTIONS);
   const failures = [];
   let passed = 0;
   const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
   function check(name, ok) {
     if (ok) passed += 1; else failures.push('실패: ' + name);
+    if (log) log(name, !!ok);
   }
   function seeded(seed) {
     let x = seed;
@@ -820,14 +847,22 @@ function selfCheck(questions) {
   check('board: 깨진 저장값은 빈 순위표로 복구되고 다시 저장된다', recovered);
   const denied = { getItem: () => { throw new Error('denied'); }, setItem: () => {} };
   check('board: getItem 예외·null 저장소는 안전', getTop(denied, 'speed', '과학').length === 0 && addRecord(denied, 'speed', '과학', '민수', 5, 1) === false && getTop(null, 'speed', '과학').length === 0 && addRecord(null, 'speed', '과학', '민수', 5, 1) === false);
-  check('board: Node에는 localStorage가 없어 getStorage는 null', getStorage() === null);
+  check('board: localStorage가 없는 환경(Node)에서 getStorage는 null', typeof localStorage !== 'undefined' || getStorage() === null);
   check('board: formatDate는 YYYY-MM-DD', formatDate(new Date(2026, 9, 8).getTime()) === '2026-10-08' && formatDate(new Date(2027, 0, 5, 23, 59).getTime()) === '2027-01-05');
 
   return { passed, failures };
 }
 
+// 주소 끝에 ?test를 붙이면 브라우저 콘솔에 자체 점검 결과를 찍는다.
+function runBrowserSelfCheck() {
+  const r = selfCheck(undefined, (name, ok) => (ok ? console.log('통과: ' + name) : console.error('실패: ' + name)));
+  const summary = `자체 점검 결과: 통과 ${r.passed}, 실패 ${r.failures.length}`;
+  if (r.failures.length) console.error(summary); else console.log(summary);
+}
+
 if (typeof document !== 'undefined') {
   initUI();
+  if (/[?&]test(?:&|=|$)/.test(location.search)) runBrowserSelfCheck();
 }
 
 if (typeof module !== 'undefined' && module.exports) {

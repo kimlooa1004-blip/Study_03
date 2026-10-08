@@ -137,3 +137,14 @@ button:disabled { cursor: default; }
 .lb-score { font-weight: 700; }
 .lb-date { color: var(--muted); font-size: 0.85rem; }
 .lb-empty { color: var(--muted); }
+
+.status-row { flex-wrap: wrap; }
+.mode-line { margin: 0 0 8px; font-weight: 700; flex: 1 1 100%; }
+.live-score { margin: 0 0 8px; font-weight: 600; color: var(--muted); }
+
+.result-list { list-style: none; margin: 12px 0; padding: 0; display: grid; gap: 6px; }
+.result-item { display: grid; grid-template-columns: 2.4em 1fr; gap: 8px; padding: 8px 12px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow-wrap: anywhere; }
+.result-item .badge { font-weight: 700; }
+.result-item.ok .badge { color: var(--ok); }
+.result-item.bad .badge { color: var(--bad); }
+.result-item .detail { display: block; color: var(--muted); font-size: 0.9rem; }

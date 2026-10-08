@@ -32,7 +32,7 @@
     <section id="view-start" hidden>
       <h1>카테고리 선택</h1>
       <p class="lead">모드: <strong id="start-mode-label"></strong></p>
-      <p id="start-notice" class="no-record-notice" hidden>순위표에 기록되지 않음</p>
+      <p id="start-notice" class="no-record-notice" hidden>연습 모드 · 순위표에 기록되지 않음</p>
       <p id="data-error" class="error" role="alert" hidden>문항 데이터를 불러올 수 없음</p>
       <div id="category-list" class="category-list">
         <button type="button" class="category-btn" data-category="한국사">한국사</button>
@@ -44,7 +44,9 @@
 
     <section id="view-question" hidden>
       <div class="status-row">
+        <p id="mode-line" class="mode-line"></p>
         <p id="progress" class="progress" aria-live="polite"></p>
+        <p id="live-score" class="live-score"></p>
         <p id="timer-box" class="timer-box" hidden>남은 시간 <span id="timer">15</span>초</p>
       </div>
       <h2 id="question-text" class="question"></h2>
@@ -63,6 +65,7 @@
       <h2>결과</h2>
       <p id="score" class="score"></p>
       <p id="result-notice" class="no-record-notice" hidden>순위표에 기록되지 않음</p>
+      <ol id="result-list" class="result-list" aria-label="문항별 결과"></ol>
       <p id="retry-summary" class="retry-summary" hidden></p>
       <div id="save-box" class="save-box" hidden>
         <label for="name-input">이름을 적고 기록을 저장하세요 (1~10자)</label>
@@ -73,7 +76,7 @@
         <p id="save-notice" class="save-notice" role="status" hidden></p>
       </div>
       <button type="button" id="retry-btn" class="primary" hidden>틀린 문제 다시 풀기</button>
-      <button type="button" id="again-btn" class="secondary">같은 설정으로 다시 하기</button>
+      <button type="button" id="again-btn" class="secondary">같은 모드 다시</button>
       <button type="button" id="home-btn" class="secondary">처음으로</button>
     </section>
 
