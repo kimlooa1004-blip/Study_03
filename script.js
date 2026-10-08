@@ -5,7 +5,7 @@ const QUESTIONS_PER_GAME = 10;
 const SPEED_SECONDS = 15;
 
 // 과제 제출용: 페이지 맨 위에 보여 줄 학번과 이름. 여기만 고치면 된다.
-const STUDENT = { id: '', name: '' };
+const STUDENT = { id: '2601922', name: '김루아' };
 
 function shuffle(arr, rng = Math.random) {
   const out = arr.slice();
