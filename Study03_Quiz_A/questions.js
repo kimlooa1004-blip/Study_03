@@ -182,6 +182,98 @@ const QUESTIONS = [
     answer: 0,
     explanation: '도버 해협은 영국해협의 동쪽 끝으로 잉글랜드의 도버와 프랑스의 칼레를 가르며 영국해협과 북해를 잇는다.',
     source: 'Britannica, "English Channel summary" https://www.britannica.com/summary/English-Channel'
+  },
+
+  // ===== 과학 =====
+  {
+    id: 'science-01',
+    category: '과학',
+    question: '식물이 광합성을 할 때 공기 중에서 흡수하는 기체는?',
+    choices: ['이산화탄소', '산소', '질소', '수소'],
+    answer: 0,
+    explanation: '식물은 햇빛 에너지로 이산화탄소와 물을 합쳐 당과 산소를 만든다.',
+    source: 'NASA Science, "The Carbon Cycle" https://science.nasa.gov/earth/earth-observatory/the-carbon-cycle/'
+  },
+  {
+    id: 'science-02',
+    category: '과학',
+    question: '사람의 대부분의 체세포 하나에 들어 있는 염색체는 모두 몇 개인가?',
+    choices: ['23개', '44개', '46개', '48개'],
+    answer: 2,
+    explanation: '사람의 체세포는 23쌍, 모두 46개의 염색체를 가지며 정자와 난자만 절반인 23개를 가진다.',
+    source: 'NHGRI, "Diploid" https://www.genome.gov/genetics-glossary/Diploid'
+  },
+  {
+    id: 'science-03',
+    category: '과학',
+    question: '1953년 DNA의 이중나선 구조 모형을 제안한 두 과학자는?',
+    choices: ['멘델과 다윈', '왓슨과 크릭', '파스퇴르와 코흐', '뉴턴과 갈릴레이'],
+    answer: 1,
+    explanation: '왓슨과 크릭은 1953년 『네이처』에 DNA 이중나선 구조를 발표했고 1962년 노벨 생리의학상을 윌킨스와 함께 받았다.',
+    source: 'Britannica, "Francis Crick" https://www.britannica.com/biography/Francis-Crick ; Britannica, "Structure and composition of DNA" https://www.britannica.com/science/heredity-genetics/Structure-and-composition-of-DNA'
+  },
+  {
+    id: 'science-04',
+    category: '과학',
+    question: '원소 기호 Au로 나타내는 금속 원소는?',
+    choices: ['은', '금', '알루미늄', '구리'],
+    answer: 1,
+    explanation: 'Au는 금(원자 번호 79)의 기호로 라틴어 aurum에서 왔다.',
+    source: 'Royal Society of Chemistry, "Gold" https://periodic-table.rsc.org/element/79/gold'
+  },
+  {
+    id: 'science-05',
+    category: '과학',
+    question: '2006년 국제천문연맹(IAU)의 행성 정의에 따르면 태양계의 행성은 모두 몇 개인가?',
+    choices: ['7개', '8개', '9개', '10개'],
+    answer: 1,
+    explanation: '2006년 IAU 정의로 수성~해왕성 8개만 행성이 되었고 명왕성은 왜소행성으로 분류되었다.',
+    source: 'IAU, 2006 General Assembly resolution votes https://www.iau.org/IAU/Iau/News/PR2006/iau-2006-general-assembly-resolution-votes.aspx ; NASA Science, "About the Planets" https://science.nasa.gov/solar-system/planets/'
+  },
+  {
+    id: 'science-06',
+    category: '과학',
+    question: '표준 대기압(1기압)에서 물이 끓는 온도는 섭씨 약 몇 도인가?',
+    choices: ['80도', '90도', '100도', '120도'],
+    answer: 2,
+    explanation: '1기압에서 물의 끓는점은 약 100℃(373K)이고 기압이 낮아지면 끓는점도 낮아진다.',
+    source: 'NIST, "SI Units – Temperature" https://www.nist.gov/pml/owm/si-units-temperature ; Britannica, "When does water boil?" https://www.britannica.com/question/When-does-water-boil'
+  },
+  {
+    id: 'science-07',
+    category: '과학',
+    question: '우주 공간 대부분에서 소리가 전달되지 않는 까닭은?',
+    choices: ['빛이 너무 강해서', '소리를 전달할 매질이 거의 없어서', '중력이 없어서', '온도가 너무 높아서'],
+    answer: 1,
+    explanation: '소리는 물질을 통해 전달되는 역학적 파동이라 우주 대부분의 진공에는 전달해 줄 매질이 없다.',
+    source: 'NASA, "New NASA Black Hole Sonifications with a Remix" https://www.nasa.gov/universe/new-nasa-black-hole-sonifications-with-a-remix/ ; Britannica, "Wave" https://www.britannica.com/science/wave-physics'
+  },
+  {
+    id: 'science-08',
+    category: '과학',
+    question: '원자 번호가 8번인 원소는?',
+    choices: ['수소', '탄소', '질소', '산소'],
+    answer: 3,
+    explanation: '산소(O)는 원자 번호 8번으로 양성자가 8개이고 상온에서 무색·무취의 기체이다.',
+    source: 'Royal Society of Chemistry, "Oxygen" https://periodic-table.rsc.org/element/8/oxygen ; Britannica, "oxygen" https://www.britannica.com/science/oxygen'
+  },
+  {
+    id: 'science-09',
+    category: '과학',
+    question: '혈당 조절에 쓰이는 호르몬인 인슐린을 만드는 기관은?',
+    choices: ['간', '췌장', '신장', '위'],
+    answer: 1,
+    explanation: '인슐린은 췌장의 랑게르한스섬 베타세포에서 만들어져 세포가 혈액의 포도당을 쓰도록 돕는다.',
+    source: 'Britannica, "Insulin" https://www.britannica.com/science/insulin ; Britannica, "Pancreas" https://www.britannica.com/science/pancreas'
+  },
+  {
+    id: 'science-10',
+    category: '과학',
+    question: '1687년 『프린키피아』에서 운동 법칙과 함께 만유인력의 법칙을 발표한 과학자는?',
+    choices: ['갈릴레이', '케플러', '뉴턴', '아인슈타인'],
+    answer: 2,
+    explanation: '뉴턴은 1687년 『자연철학의 수학적 원리(프린키피아)』에서 만유인력의 법칙과 3가지 운동 법칙을 제시했다.',
+    source: 'Britannica, "Principia" https://www.britannica.com/topic/Principia'
   }
 ];
 
