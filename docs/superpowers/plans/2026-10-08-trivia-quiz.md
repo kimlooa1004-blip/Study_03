@@ -18,10 +18,10 @@
 - 연습: 시간 제한·힌트 없음, 맞히면 1점, 순위표 기록 안 함. 시작 화면과 결과 화면에 `순위표에 기록되지 않음` 표시.
 - 스피드: 문항마다 15초, 시간 초과는 오답, 해설이 나오면 타이머 정지, [다음]을 누르면 15초부터 다시.
 - 힌트: 문항마다 1번, 오답 보기 2개를 지움, 힌트를 쓰고 맞히면 0.5점(힌트 없이 맞히면 1점, 시간 제한 없음).
-- 순위표: 스피드·힌트만 기록. 모드별 × 카테고리별(8개), 항목은 점수+날짜, 상위 10개, 점수 내림차순·동점이면 최근 기록이 위. 닉네임 없음.
-- 문항 규칙: 정답 하나 / 해설에 확인한 출처 명시 / 최상급 표현("가장 ~" 등)은 문제에 기준과 시점 명시.
+- 순위표: 스피드·힌트만 기록. 모드별 × 카테고리별(8개), 항목은 이름(1~10자)+점수+날짜, 표마다 상위 5건, 점수 내림차순·동점이면 먼저 세운 기록이 위. 이름은 결과 화면의 이름 입력칸과 [기록 저장]으로 받고 판마다 한 번만 저장.
+- 문항 규칙(PRD 1.3): 정답 하나 / 해설에 확인한 출처의 기관명과 주소 명시 / 최상급 표현("가장 ~" 등)은 문제에 기준과 시점 명시 / 해설은 80자 이하 한 줄 / 한 문항의 보기 4개는 서로 다름.
 - 점수는 0.5 단위로 표시(예: `7.5`).
-- 가정(PRD 8장): 스피드 맞히면 1점, 문항 순서는 판마다 섞고 보기 순서는 고정, 시간 초과 시 정답·해설을 보여 주고 [다음]을 기다림, 진행 중인 판은 저장하지 않음, 날짜 표기 `YYYY-MM-DD`.
+- 설계 결정(PRD 1.4): 문항 순서와 보기 순서를 모두 섞는다(다시 풀 때도 보기를 새로 섞음). 연습의 틀린 문제 다시 풀기는 모두 맞힐 때까지 반복할 수 있고 점수는 처음 10문제 결과만 인정. 스피드 맞히면 1점, 시간 초과 시 정답·해설을 보여 주고 [다음]을 기다림, 진행 중인 판은 저장하지 않음, 날짜 `YYYY-MM-DD`, 문항 데이터가 10개 미만이면 "문항 데이터를 불러올 수 없음" 안내.
 
 ## Review Focus
 
@@ -30,8 +30,8 @@
 1. 같은 문항에서 보기를 연타하거나 더블클릭해도 점수가 한 번만 반영된다 → Task 7
 2. 스피드에서 답 선택과 시간 초과가 겹치거나, 판을 나간 뒤에도 이전 타이머가 남아도 한 문항이 두 번 채점되지 않는다 → Task 11
 3. 힌트를 두 번 누르거나 힌트 후 지워진 보기를 눌러도 정답 보기는 남고 점수·상태가 깨지지 않는다 → Task 9
-4. 틀린 문항이 0개면 [틀린 문제 다시 풀기]가 없고, 다시 풀어도 원래 판 점수는 바뀌지 않는다 → Task 10
-5. localStorage 값이 깨졌거나 접근이 막혀도 게임은 정상이고 순위표는 빈 상태로 복구된다 → Task 13
+4. 틀린 문항이 0개면 [틀린 문제 다시 풀기]가 없고, 다시 풀어도 원래 판 점수는 바뀌지 않으며, 다시 풀고 또 틀리면 버튼이 다시 나온다 → Task 10
+5. localStorage 값이 깨졌거나 접근이 막혀도, 이름이 비었거나 11자 이상이어도 게임은 정상이고 순위표는 빈 상태로 복구되며 잘못된 이름은 저장되지 않는다 → Task 13
 
 ---
 
@@ -54,7 +54,7 @@
 ```js
 // Question: { id, category, question, choices: [4 strings], answer: 0-3, explanation, source }
 // Game:     { mode: 'practice'|'speed'|'hint', category, questions, index, score,
-//             results: [{ id, correct, hintUsed, timedOut }], answered, hintUsed, hidden: number[], isRetry }
+//             results: [{ id, correct, hintUsed, timedOut }], answered, hintUsed, hidden: number[], isRetry, saved }
 // Feedback: { correct, correctIndex, explanation, source, points, timedOut }
 ```
 
@@ -69,9 +69,9 @@
 - Test: `Study03_Quiz_A/tests/validateQuestions.test.js`
 
 **Interfaces:**
-- Produces: `validateQuestions(list: Question[]) -> string[]` (규칙 위반 메시지 목록, 비어 있으면 통과). `module.exports = { validateQuestions, SUPERLATIVE }`.
+- Produces: `validateQuestions(list: Question[]) -> string[]` (규칙 위반 메시지 목록, 비어 있으면 통과. 규칙: PRD 1.3의 다섯 가지 중 기계로 확인 가능한 것). `module.exports = { validateQuestions, SUPERLATIVE }`.
 
-- [ ] **Step 1: 실패하는 테스트 작성** — 유효한 문항 1개 fixture는 `[]`를 돌려주고, 아래 각각은 메시지 1개 이상을 돌려준다: 보기가 3개, `answer`가 4, `explanation`에 줄바꿈 포함, `source` 빈 문자열, `id` 중복, `category`가 4개 밖, `"가장 큰 나라는?"`(최상급인데 `기준` 없음) → 위반, `"2024년 면적 기준 가장 큰 나라는?"` → 통과, 같은 보기 문자열 중복.
+- [ ] **Step 1: 실패하는 테스트 작성** — 유효한 문항 1개 fixture는 `[]`를 돌려주고, 아래 각각은 메시지 1개 이상을 돌려준다: 보기가 3개, `answer`가 4, `explanation`에 줄바꿈 포함, `source` 빈 문자열, `id` 중복, `category`가 4개 밖, `"가장 큰 나라는?"`(최상급인데 `기준` 없음) → 위반, `"2024년 면적 기준 가장 큰 나라는?"` → 통과, 같은 보기 문자열 중복, 해설 81자(위반)·80자(통과), 출처에 `http` 주소가 없음(위반).
 - [ ] **Step 2: 실행해 실패 확인** — `node --test Study03_Quiz_A/tests/validateQuestions.test.js` → FAIL (모듈 없음)
 - [ ] **Step 3: `validateQuestions` 구현** — 위반마다 `"<id>: <사유>"` 문자열. `SUPERLATIVE = /가장|최초|최대|최소|최고|최장|최단|제일/`; 문제 문장이 이에 일치하면 `기준`이 문장에 있어야 한다.
 - [ ] **Step 4: 통과 확인** — 같은 명령 → PASS
@@ -111,9 +111,9 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 
 **Interfaces:**
 - Consumes: `QUESTIONS` (Task 2–5)
-- Produces (`module.exports`): `CATEGORIES: string[]`, `shuffle(arr, rng = Math.random) -> arr`(새 배열), `pickQuestions(all, category, rng = Math.random) -> Question[]`(그 카테고리 10개, 순서 섞음), `scoreFor(mode, correct: boolean, hintUsed: boolean) -> number`, `createGame({ mode, category, questions, isRetry = false }) -> Game`, `answer(game, choiceIndex) -> Feedback | null`(이미 답했으면 `null`), `nextQuestion(game) -> void`(답하기 전이면 아무 일도 안 함), `isFinished(game) -> boolean`.
+- Produces (`module.exports`): `CATEGORIES: string[]`, `shuffle(arr, rng = Math.random) -> arr`(새 배열), `pickQuestions(all, category, rng = Math.random) -> Question[]`(그 카테고리 10개를 문항 순서와 보기 순서 모두 섞은 새 객체로, `answer`는 섞인 `choices`에서의 정답 인덱스로 다시 계산. 10개 미만이면 `Error` 발생), `scoreFor(mode, correct: boolean, hintUsed: boolean) -> number`, `createGame({ mode, category, questions, isRetry = false }) -> Game`, `answer(game, choiceIndex) -> Feedback | null`(이미 답했으면 `null`), `nextQuestion(game) -> void`(답하기 전이면 아무 일도 안 함), `isFinished(game) -> boolean`.
 
-- [ ] **Step 1: 실패하는 테스트 작성** — `pickQuestions(QUESTIONS, '과학')`은 10개이고 모두 `category === '과학'`; `shuffle`은 원본을 바꾸지 않고 같은 원소를 가짐; 연습 모드에서 정답 `answer`는 `points 1`·`game.score 1`, 오답은 `points 0`·점수 불변; **같은 문항에서 `answer`를 두 번 호출하면 두 번째는 `null`이고 점수가 한 번만 반영**(Review Focus 1); 10문제를 모두 풀고 `nextQuestion` 10번 후 `isFinished`가 `true`; `answer` 전 `nextQuestion`은 `index`를 바꾸지 않음.
+- [ ] **Step 1: 실패하는 테스트 작성** — `pickQuestions(QUESTIONS, '과학')`은 10개이고 모두 `category === '과학'`; **섞은 뒤에도 모든 문항에서 `choices[answer]`가 원본의 정답 문자열과 같고 보기 4개의 구성이 원본과 같음(rng를 바꿔 50회 반복); 문항이 9개뿐인 카테고리는 `Error`**; `shuffle`은 원본을 바꾸지 않고 같은 원소를 가짐; 연습 모드에서 정답 `answer`는 `points 1`·`game.score 1`, 오답은 `points 0`·점수 불변; **같은 문항에서 `answer`를 두 번 호출하면 두 번째는 `null`이고 점수가 한 번만 반영**(Review Focus 1); 10문제를 모두 풀고 `nextQuestion` 10번 후 `isFinished`가 `true`; `answer` 전 `nextQuestion`은 `index`를 바꾸지 않음.
 - [ ] **Step 2: 실패 확인** — `node --test Study03_Quiz_A/tests/game.test.js` → FAIL
 - [ ] **Step 3: 구현** — `scoreFor('practice', true, *) === 1`, 오답은 `0`. 이 단계에서는 연습 모드만 다룬다.
 - [ ] **Step 4: 통과 확인** — 같은 명령 → PASS
@@ -131,7 +131,7 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 - Produces (이후 화면 작업이 쓰는 선택자): 화면 `#view-start`, `#view-question`, `#view-result`(전환은 `hidden` 속성); `.category-btn[data-category]` 4개; `.no-record-notice`(텍스트 `순위표에 기록되지 않음`); 문제 화면 `#progress`(`3 / 10`), `#question-text`, `.choice-btn` 4개, `#feedback`(정답 여부·정답·해설·출처), `#next-btn`(마지막 문항에서는 텍스트 `결과 보기`); 결과 `#score`(`7 / 10`), `#home-btn`.
 - 단축키: 숫자 `1`~`4`는 해당 보기 선택, `Enter`는 [다음]. 보기는 `<button>`이라 Tab·Enter로도 선택된다.
 
-- [ ] **Step 1: 실패하는 화면 테스트 작성** — `file://`로 열기 → 시작 화면에 `.no-record-notice`와 카테고리 버튼 4개 → `과학` 선택 → `#progress`가 `1 / 10` → 보기 클릭 → `#feedback`에 해설과 출처가 보이고 보기 4개가 모두 비활성 → 키보드 `1` 선택·`Enter` 다음 동작 → 10문제를 모두 푼 뒤 `#score`가 `N / 10` 형식이고 결과 화면에도 `.no-record-notice` → `#home-btn`이 시작 화면으로 돌아감. 정답 인덱스는 페이지의 `QUESTIONS`로 계산해 정확히 3문제만 맞히고 `#score`가 `3 / 10`임을 단언.
+- [ ] **Step 1: 실패하는 화면 테스트 작성** — `file://`로 열기 → 시작 화면에 `.no-record-notice`와 카테고리 버튼 4개 → `과학` 선택 → `#progress`가 `1 / 10` → 보기 클릭 → `#feedback`에 해설과 출처가 보이고 보기 4개가 모두 비활성 → 키보드 `1` 선택·`Enter` 다음 동작 → 10문제를 모두 푼 뒤 `#score`가 `N / 10` 형식이고 결과 화면에도 `.no-record-notice` → `#home-btn`이 시작 화면으로 돌아감. 정답 인덱스는 페이지의 `QUESTIONS`로 계산해 정확히 3문제만 맞히고 `#score`가 `3 / 10`임을 단언(섞인 보기 순서에서도 정답 위치를 `QUESTIONS`의 정답 문자열로 찾아 클릭). 문항 데이터 오류 안내(PRD 1-7)는 `pickQuestions`의 `Error`를 UI가 잡아 `#data-error`(`문항 데이터를 불러올 수 없음`)를 보여 주고 해당 `.category-btn`을 비활성으로 두는 것으로 구현하며, 단위 테스트(Task 7)로 `Error`를 확인하고 화면은 `questions.js`의 한 카테고리를 임시로 줄여 수동 확인한다.
 - [ ] **Step 2: 실패 확인** — `NODE_PATH=$(npm root -g) node Study03_Quiz_A/tests/e2e/stage1.js` → FAIL
 - [ ] **Step 3: 마크업·스타일·UI 구현** — 렌더 함수는 `Game`을 읽기만 하고 로직 함수만 호출한다. 모바일(폭 375px)에서 가로 스크롤이 없어야 한다.
 - [ ] **Step 4: 통과 확인** — 같은 명령 → PASS, 이어서 `node --test Study03_Quiz_A/tests/` → PASS
@@ -164,9 +164,9 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 - Test: `Study03_Quiz_A/tests/retry.test.js`
 
 **Interfaces:**
-- Produces: `wrongQuestions(game) -> Question[]`(`results`에서 `correct === false`인 문항을 푼 순서대로), `retryGame(game) -> Game | null`(틀린 문항이 없으면 `null`, 있으면 `createGame({ mode: 'practice', category: game.category, questions: wrongQuestions(game), isRetry: true })`). 원래 `game.score`는 건드리지 않는다.
+- Produces: `wrongQuestions(game) -> Question[]`(`results`에서 `correct === false`인 문항을 푼 순서대로), `retryGame(game) -> Game | null`(틀린 문항이 없으면 `null`, 있으면 틀린 문항의 보기 순서를 새로 섞어 `createGame({ mode: 'practice', category: game.category, questions, isRetry: true })`). 원래 `game.score`는 건드리지 않는다. 다시 푼 판(`isRetry`)에도 `retryGame`을 다시 호출할 수 있어, 또 틀린 문항만 모아 반복하고 모두 맞히면 `null`이다.
 
-- [ ] **Step 1: 실패하는 테스트 작성** — 3문제 틀린 판 → `wrongQuestions.length === 3`이고 순서 유지; 전부 맞힌 판 → `retryGame`이 `null`(Review Focus 4); `retryGame`으로 만든 판을 끝까지 풀어도 원래 `game.score`가 그대로; 다시 푼 판의 `isRetry === true`이고 한 번 더 틀린 문항을 또 다시 풀게 하는 함수는 없다.
+- [ ] **Step 1: 실패하는 테스트 작성** — 3문제 틀린 판 → `wrongQuestions.length === 3`이고 순서 유지; 전부 맞힌 판 → `retryGame`이 `null`(Review Focus 4); `retryGame`으로 만든 판을 끝까지 풀어도 원래 `game.score`가 그대로; 다시 푼 판의 `isRetry === true`이고, 그 판에서 일부를 또 틀리면 `retryGame`이 그 문항들로 다시 판을 만들며(보기 순서 새로 섞임), 모두 맞히면 `null`.
 - [ ] **Step 2: 실패 확인** → FAIL
 - [ ] **Step 3: 구현**
 - [ ] **Step 4: 통과 확인** — `node --test Study03_Quiz_A/tests/` → PASS
@@ -197,7 +197,7 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 - Consumes: Task 9–11의 로직, Task 8의 선택자.
 - Produces: 화면 `#view-mode`(`.mode-btn[data-mode="practice|speed|hint"]`, 연습 설명에 `.no-record-notice`); 흐름 모드 선택 → 카테고리 선택 → 문제 → 결과; 문제 화면 `#timer`(스피드만 표시, `15`부터), `#hint-btn`(힌트 모드만 표시, 사용 후·답한 후 비활성), 지워진 보기는 `hidden`; 결과 `#retry-btn`(연습 모드이고 틀린 문항이 있을 때만 표시), `#retry-summary`(`다시 맞힌 N / M`); 결과 화면에서 [다시 하기]와 `#home-btn`.
 
-- [ ] **Step 1: 실패하는 화면 테스트 작성** — `page.clock`으로 시간 제어. (a) 스피드: 시작 시 `#timer`가 `15`, 5초 경과 후 약 `10`, 답하면 정지(5초 더 경과해도 값 불변), `#next-btn` 후 다시 `15`; 15초 경과하면 오답 처리되고 정답·해설이 보이며 `#next-btn`을 기다림; **시간 초과 직후 보기 클릭이 점수에 반영되지 않음; 결과 화면에서 `#home-btn`으로 나온 뒤 15초가 지나도 아무 변화 없음**(Review Focus 2). (b) 힌트: `#hint-btn` 클릭 → 보기 2개가 사라지고 정답 보기는 남음, 버튼 비활성, 힌트 후 정답이면 결과가 `0.5` 단위로 표시. (c) 연습: 일부러 2문제를 틀린 판 → `#retry-btn` 표시 → 2문제만 다시 풀고 `#retry-summary` 확인, 원래 점수는 결과에 그대로; 전부 맞힌 판에는 `#retry-btn`이 없음.
+- [ ] **Step 1: 실패하는 화면 테스트 작성** — `page.clock`으로 시간 제어. (a) 스피드: 시작 시 `#timer`가 `15`, 5초 경과 후 약 `10`, 답하면 정지(5초 더 경과해도 값 불변), `#next-btn` 후 다시 `15`; 15초 경과하면 오답 처리되고 정답·해설이 보이며 `#next-btn`을 기다림; **시간 초과 직후 보기 클릭이 점수에 반영되지 않음; 결과 화면에서 `#home-btn`으로 나온 뒤 15초가 지나도 아무 변화 없음**(Review Focus 2). (b) 힌트: `#hint-btn` 클릭 → 보기 2개가 사라지고 정답 보기는 남음, 버튼 비활성, 힌트 후 정답이면 결과가 `0.5` 단위로 표시. (c) 연습: 일부러 2문제를 틀린 판 → `#retry-btn` 표시 → 2문제만 다시 풀고 `#retry-summary` 확인, 원래 점수는 결과에 그대로; 다시 풀 때 일부러 1문제를 또 틀리면 `#retry-btn`이 다시 나오고 그 1문제만 다시 풀 수 있으며, 모두 맞히면 `#retry-btn`이 사라짐; 전부 맞힌 판에는 `#retry-btn`이 없음.
 - [ ] **Step 2: 실패 확인** — `NODE_PATH=$(npm root -g) node Study03_Quiz_A/tests/e2e/stage2.js` → FAIL
 - [ ] **Step 3: 구현** — 판이 바뀔 때(다음 문항, 결과, 홈) 이전 타이머의 `stop()`을 반드시 호출한다.
 - [ ] **Step 4: 통과 확인** — stage1.js, stage2.js, `node --test Study03_Quiz_A/tests/` 모두 PASS (1단계 화면은 모드 선택이 추가되어 stage1.js의 시작 절차를 맞게 고친다)
@@ -214,9 +214,9 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 - Test: `Study03_Quiz_A/tests/leaderboard.test.js`
 
 **Interfaces:**
-- Produces: `LEADERBOARD_KEY = 'quiz.leaderboard.v1'`, `addRecord(storage, mode, category, score, at: number) -> boolean`(`practice`이거나 저장 실패면 `false`), `getTop(storage, mode, category) -> { score, at }[]`(최대 10개, 점수 내림차순·동점이면 `at` 내림차순), `formatDate(at) -> 'YYYY-MM-DD'`, `getStorage() -> Storage | null`(접근 예외 시 `null`). 저장 형식은 `{ "<mode>|<category>": [{ score, at }] }`를 JSON으로 한 값 하나. `storage`는 `getItem/setItem`만 쓰는 객체(테스트에서 가짜로 주입).
+- Produces: `LEADERBOARD_KEY = 'quiz.leaderboard.v1'`, `addRecord(storage, mode, category, name: string, score: number, at: number) -> boolean`(`practice`이거나 이름이 trim 후 1~10자가 아니거나 저장 실패면 `false`), `getTop(storage, mode, category) -> { name, score, at }[]`(최대 5개, 점수 내림차순·동점이면 `at` 오름차순 — 먼저 세운 기록이 위), `formatDate(at) -> 'YYYY-MM-DD'`, `getStorage() -> Storage | null`(접근 예외 시 `null`). 저장 형식은 `{ "<mode>|<category>": [{ name, score, at }] }`를 JSON으로 한 값 하나. `storage`는 `getItem/setItem`만 쓰는 객체(테스트에서 가짜로 주입).
 
-- [ ] **Step 1: 실패하는 테스트 작성** — 11개 기록 후 `getTop`은 10개이고 최저 점수가 빠짐; 점수 `7.5`, `7`, `7.5`(더 최근)의 정렬 → 최근 `7.5`, 이전 `7.5`, `7`; 모드·카테고리가 다르면 서로 섞이지 않음; `addRecord(…'practice'…)`는 `false`이고 아무것도 저장 안 함; `setItem`이 예외를 던지는 storage → `false`, 던지지 않음; **`getItem`이 `'{깨진'`·`'[]'`·`'null'`을 돌려주면 `getTop`은 `[]`이고 이후 `addRecord`가 정상 저장**; `storage === null`이면 `getTop`은 `[]`, `addRecord`는 `false`(Review Focus 5); `formatDate(new Date(2026, 9, 8).getTime()) === '2026-10-08'`.
+- [ ] **Step 1: 실패하는 테스트 작성** — 6개 기록 후 `getTop`은 5개이고 최저 점수가 빠짐; 점수 `7.5`, `7`, `7.5`(더 최근)의 정렬 → 이전 `7.5`, 최근 `7.5`, `7`; **이름이 빈 문자열·공백뿐·11자이면 `addRecord`가 `false`이고 저장 안 됨, 앞뒤 공백은 잘라 저장, 10자는 통과**; 모드·카테고리가 다르면 서로 섞이지 않음; `addRecord(…'practice'…)`는 `false`이고 아무것도 저장 안 함; `setItem`이 예외를 던지는 storage → `false`, 던지지 않음; **`getItem`이 `'{깨진'`·`'[]'`·`'null'`을 돌려주면 `getTop`은 `[]`이고 이후 `addRecord`가 정상 저장**; `storage === null`이면 `getTop`은 `[]`, `addRecord`는 `false`(Review Focus 5); `formatDate(new Date(2026, 9, 8).getTime()) === '2026-10-08'`.
 - [ ] **Step 2: 실패 확인** — `node --test Study03_Quiz_A/tests/leaderboard.test.js` → FAIL
 - [ ] **Step 3: 구현**
 - [ ] **Step 4: 통과 확인** — `node --test Study03_Quiz_A/tests/` → PASS
@@ -230,11 +230,11 @@ Task 2 = 한국사(`history-01`~`10`), Task 3 = 세계지리(`geography-01`~`10`
 
 **Interfaces:**
 - Consumes: Task 13의 순위표 함수, Task 12의 화면.
-- Produces: `#view-leaderboard`(시작 화면의 `#leaderboard-btn`으로 진입), 모드 탭 `.lb-mode-tab[data-mode="speed|hint"]`, 카테고리 탭 `.lb-category-tab[data-category]`, 행 `.lb-row`(순위·점수·날짜), 빈 상태 `#lb-empty`; 결과 화면의 `#save-notice`(저장 불가 시 `기록을 저장할 수 없음`). 스피드·힌트 판이 끝나면 한 번 자동 기록한다(연습·다시 풀기 라운드는 기록 안 함).
+- Produces: `#view-leaderboard`(시작 화면의 `#leaderboard-btn`으로 진입), 모드 탭 `.lb-mode-tab[data-mode="speed|hint"]`, 카테고리 탭 `.lb-category-tab[data-category]`, 행 `.lb-row`(순위·이름·점수·날짜), 빈 상태 `#lb-empty`; 스피드·힌트 결과 화면의 `#name-input`(maxlength 10), `#save-btn`([기록 저장], 저장 뒤 비활성), `#save-notice`(저장 불가 시 `기록을 저장할 수 없음`, 이름이 잘못되면 `이름을 1~10자로 입력`). 기록은 [기록 저장]을 누를 때 한 번만 저장한다(연습·다시 풀기 라운드에는 이 UI가 없다).
 
-- [ ] **Step 1: 실패하는 화면 테스트 작성** — 스피드 `과학` 한 판을 끝낸 뒤 순위표의 스피드·과학 탭에 `.lb-row` 1개, 같은 판이 힌트·과학 탭이나 스피드·한국사 탭에는 없음(`#lb-empty`); 연습 판과 다시 풀기 라운드를 끝내도 `.lb-row`가 늘지 않음; 페이지를 새로 열어도(같은 `localStorage`) 기록이 남음; 한 판의 결과 화면을 새로고침 없이 두 번 열어도 기록은 1건; `Storage.prototype.setItem`이 예외를 던지게 한 컨텍스트에서 판이 정상 완료되고 `#save-notice`가 보임; `localStorage`에 깨진 값을 미리 넣어도 순위표가 `#lb-empty`로 열림.
+- [ ] **Step 1: 실패하는 화면 테스트 작성** — 스피드 `과학` 한 판을 끝낸 뒤 이름 `민수`를 입력하고 [기록 저장]을 누르면 순위표의 스피드·과학 탭에 `.lb-row` 1개(이름·점수·날짜 `YYYY-MM-DD` 포함), 같은 판이 힌트·과학 탭이나 스피드·한국사 탭에는 없음(`#lb-empty`); 빈 이름·11자 이름은 저장되지 않고 안내가 보임; [기록 저장]을 두 번 눌러도 기록은 1건이고 버튼이 비활성; 연습 판과 다시 풀기 라운드의 결과 화면에는 `#name-input`이 없음; 페이지를 새로 열어도(같은 `localStorage`) 기록이 남음; 6판을 저장하면 표에는 5건만 보임; `Storage.prototype.setItem`이 예외를 던지게 한 컨텍스트에서 판이 정상 완료되고 `#save-notice`가 보임; `localStorage`에 깨진 값을 미리 넣어도 순위표가 `#lb-empty`로 열림.
 - [ ] **Step 2: 실패 확인** — `NODE_PATH=$(npm root -g) node Study03_Quiz_A/tests/e2e/stage3.js` → FAIL
-- [ ] **Step 3: 구현** — 결과 화면에 들어갈 때만 `addRecord`를 호출하고, 같은 판에서 다시 그려져도 중복 호출하지 않도록 `Game`에 기록 여부를 둔다(필드 추가 시 공용 타입 주석도 갱신).
+- [ ] **Step 3: 구현** — [기록 저장]을 눌렀을 때만 `addRecord`를 호출하고, 성공하면 `Game.saved = true`로 두어 중복 저장을 막는다(필드 추가 시 공용 타입 주석도 갱신).
 - [ ] **Step 4: 통과 확인** — stage1~3.js, `node --test Study03_Quiz_A/tests/` 모두 PASS
 - [ ] **Step 5: 커밋** — `git add Study03_Quiz_A && git commit -m "feat: leaderboard UI and auto-record (stage 3)"`
 

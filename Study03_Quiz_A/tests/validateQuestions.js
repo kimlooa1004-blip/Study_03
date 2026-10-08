@@ -20,7 +20,9 @@ function validateQuestions(list) {
     if (!Number.isInteger(q.answer) || q.answer < 0 || q.answer > 3) fail('answer가 0~3이 아님');
     if (typeof q.explanation !== 'string' || !q.explanation.trim()) fail('해설이 비어 있음');
     else if (/[\r\n]/.test(q.explanation)) fail('해설이 한 줄이 아님');
+    else if (q.explanation.length > 80) fail('해설이 80자를 넘음');
     if (typeof q.source !== 'string' || q.source.trim().length < 2) fail('출처가 비어 있음');
+    else if (!/https?:\/\//.test(q.source)) fail('출처에 주소(URL)가 없음');
     if (typeof q.question === 'string' && SUPERLATIVE.test(q.question) && !q.question.includes('기준')) {
       fail('최상급 표현이 있는데 문제에 "기준"이 없음');
     }

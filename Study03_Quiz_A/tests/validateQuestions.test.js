@@ -9,7 +9,7 @@ const good = () => ({
   choices: ['50도', '80도', '100도', '120도'],
   answer: 2,
   explanation: '1기압에서 물은 100도에서 끓는다.',
-  source: '국가기술표준원 SI 단위 안내'
+  source: '국가기술표준원 SI 단위 안내 https://www.kats.go.kr/'
 });
 
 test('유효한 문항은 위반이 없다', () => {
@@ -65,5 +65,23 @@ test('기준이 있는 최상급 문제는 통과', () => {
 test('보기 문자열이 중복되면 위반', () => {
   const q = good();
   q.choices = ['a', 'a', 'b', 'c'];
+  assert.ok(validateQuestions([q]).length >= 1);
+});
+
+test('해설이 80자를 넘으면 위반', () => {
+  const q = good();
+  q.explanation = '가'.repeat(81);
+  assert.ok(validateQuestions([q]).length >= 1);
+});
+
+test('해설이 80자이면 통과', () => {
+  const q = good();
+  q.explanation = '가'.repeat(80);
+  assert.deepStrictEqual(validateQuestions([q]), []);
+});
+
+test('출처에 주소(URL)가 없으면 위반', () => {
+  const q = good();
+  q.source = '국가기술표준원 SI 단위 안내';
   assert.ok(validateQuestions([q]).length >= 1);
 });
