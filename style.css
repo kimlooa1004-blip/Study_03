@@ -127,15 +127,14 @@ button:disabled { cursor: default; }
 .save-notice.error { color: var(--bad); }
 .save-notice.ok { color: var(--ok); }
 
-.tab-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-.tab-row button { padding: 8px 12px; text-align: center; }
-.tab-row button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); font-weight: 600; }
-
-.lb-list { list-style: none; margin: 12px 0; padding: 0; display: grid; gap: 8px; }
-.lb-row { display: grid; grid-template-columns: 2.2em 1fr auto auto; gap: 8px; align-items: baseline; padding: 10px 12px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
-.lb-name { overflow-wrap: anywhere; }
-.lb-score { font-weight: 700; }
-.lb-date { color: var(--muted); font-size: 0.85rem; }
+.lb-tables { margin: 12px 0; }
+.lb-board { margin-bottom: 14px; }
+.lb-board h3 { margin: 0 0 6px; font-size: 1rem; }
+.lb-table { width: 100%; border-collapse: collapse; table-layout: fixed; background: var(--card); border: 1px solid var(--line); }
+.lb-table th, .lb-table td { padding: 8px 6px; text-align: left; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.lb-table th:first-child, .lb-table td:first-child { width: 3em; }
+.lb-table th:nth-child(3), .lb-table td:nth-child(3) { width: 3.5em; }
+.lb-table th:nth-child(4), .lb-table td:nth-child(4) { width: 6.5em; }
 .lb-empty { color: var(--muted); }
 
 .status-row { flex-wrap: wrap; }

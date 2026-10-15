@@ -243,8 +243,6 @@ const MODE_LABELS = { practice: '연습', speed: '스피드', hint: '힌트' };
 function initUI() {
   const $ = (id) => document.getElementById(id);
   const viewNames = ['start', 'mode', 'question', 'result', 'leaderboard'];
-  let lbMode = 'speed';
-  let lbCategory = '한국사';
   let mode = null;
   let category = null;
   let rootGame = null; // 처음 10문제 판. 점수는 이 판의 결과만 인정한다
@@ -497,31 +495,49 @@ function initUI() {
     $('name-input').disabled = true;
     $('save-btn').disabled = true;
     setSaveNotice('기록했어요', 'ok');
+    renderBoard();
+    show('leaderboard');
   }
 
+  // 스피드·힌트 × 카테고리 4개 = 표 8개를 한 화면에 모두 보여 준다.
   function renderBoard() {
-    document.querySelectorAll('.lb-mode-tab').forEach((b) => {
-      b.setAttribute('aria-pressed', String(b.dataset.mode === lbMode));
+    const wrap = $('lb-tables');
+    wrap.textContent = '';
+    const storage = getStorage();
+    [['speed', '스피드'], ['hint', '힌트']].forEach(([mode, modeLabel]) => {
+      CATEGORIES.forEach((category) => {
+        const box = document.createElement('div');
+        box.className = 'lb-board';
+        const title = document.createElement('h3');
+        title.textContent = `${modeLabel} · ${category}`;
+        box.appendChild(title);
+        const top = getTop(storage, mode, category);
+        if (top.length === 0) {
+          const empty = document.createElement('p');
+          empty.className = 'lb-empty';
+          empty.textContent = '기록 없음';
+          box.appendChild(empty);
+        } else {
+          const table = document.createElement('table');
+          table.className = 'lb-table';
+          const head = table.createTHead().insertRow();
+          ['순위', '이름', '점수', '날짜'].forEach((t) => {
+            const th = document.createElement('th');
+            th.textContent = t;
+            head.appendChild(th);
+          });
+          const body = table.createTBody();
+          top.forEach((rec, i) => {
+            const tr = body.insertRow();
+            [String(i + 1), rec.name, formatScore(rec.score), formatDate(rec.at)].forEach((t) => {
+              tr.insertCell().textContent = t;
+            });
+          });
+          box.appendChild(table);
+        }
+        wrap.appendChild(box);
+      });
     });
-    document.querySelectorAll('.lb-category-tab').forEach((b) => {
-      b.setAttribute('aria-pressed', String(b.dataset.category === lbCategory));
-    });
-    const list = $('lb-list');
-    list.textContent = '';
-    const top = getTop(getStorage(), lbMode, lbCategory);
-    top.forEach((rec, i) => {
-      const li = document.createElement('li');
-      li.className = 'lb-row';
-      [['lb-rank', `${i + 1}위`], ['lb-name', rec.name], ['lb-score', formatScore(rec.score)], ['lb-date', formatDate(rec.at)]]
-        .forEach(([cls, text]) => {
-          const span = document.createElement('span');
-          span.className = cls;
-          span.textContent = text;
-          li.appendChild(span);
-        });
-      list.appendChild(li);
-    });
-    $('lb-empty').hidden = top.length > 0;
   }
 
   function goNext() {
@@ -574,12 +590,6 @@ function initUI() {
     show('leaderboard');
   });
   $('lb-back-btn').addEventListener('click', () => show('start'));
-  document.querySelectorAll('.lb-mode-tab').forEach((b) => {
-    b.addEventListener('click', () => { lbMode = b.dataset.mode; renderBoard(); });
-  });
-  document.querySelectorAll('.lb-category-tab').forEach((b) => {
-    b.addEventListener('click', () => { lbCategory = b.dataset.category; renderBoard(); });
-  });
 
   document.addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
